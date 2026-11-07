@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "root-companion"
+version = "0.1.0"
+description = "Ordenador compañero (Raspberry Pi 5) del dron reforestador Root: telemetría MAVLink y petición de suelta de semillas"
+requires-python = ">=3.10"
+dependencies = ["pymavlink>=2.4.41"]
+
+[project.scripts]
+root-companion = "root_companion.cli:main"
+
+[tool.setuptools]
+packages = ["root_companion"]

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  proyecto:
+    name: Pruebas del proyecto (sin ArduPilot)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencias
+        run: sudo apt-get update && sudo apt-get install -y lua5.4 cmake g++
+      - name: Configurar, compilar y probar
+        run: |
+          cmake --preset dev
+          cmake --build --preset dev
+          ctest --preset dev
+
+  parametros-ardupilot:
+    name: Parámetros contra ArduPilot 4.7.2
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencias
+        run: sudo apt-get update && sudo apt-get install -y lua5.4 cmake g++
+      - name: Descargar ArduPilot y validar los .parm
+        run: |
+          cmake --preset ardupilot
+          ctest --preset ardupilot -R "params|ardupilot"

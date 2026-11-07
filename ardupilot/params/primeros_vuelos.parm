@@ -1,0 +1,9 @@
+# =============================================================================
+# Root — capa conservadora para los primeros vuelos (cargar DESPUÉS de las otras)
+# Informe 4.1 / 9.9: límite de gas en las primeras pruebas y despegue a mano o
+# con el piloto listo para pasar a MANUAL. Quitar la capa cuando el avión
+# complete 10 min de vuelo estable con carga completa a 45-50 km/h (criterio 9.9).
+# =============================================================================
+# 80 %: el informe 9.9 despega "al 80 %" en los primeros vuelos
+THR_MAX,80
+TKOFF_THR_MAX,80

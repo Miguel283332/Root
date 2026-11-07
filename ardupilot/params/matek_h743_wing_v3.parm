@@ -1,0 +1,46 @@
+# =============================================================================
+# Root — cableado de la Matek H743-Wing V3 (placa ArduPilot "MatekH743")
+# Orden de puertos tomado de libraries/AP_HAL_ChibiOS/hwdef/MatekH743/hwdef.dat
+# de Plane-4.7.2:  SERIAL1=UART7 (telem1)  SERIAL2=USART1 (telem2)
+#                  SERIAL3=USART2 (GPS1)   SERIAL4=USART3 (GPS2)
+#                  SERIAL5=UART8           SERIAL6=UART4
+#                  SERIAL7=USART6 (entrada RC)
+# Carga DESPUÉS de root_plane_base.parm.
+# =============================================================================
+
+# ---- Raspberry Pi 5 (MAVLink 2 por UART, informe 4.3/9.10) --------------------
+# MAVLink2 en telem2 (USART1): TX/RX cruzados con los GPIO de la RPi
+SERIAL2_PROTOCOL,2
+# 921600 baudios
+SERIAL2_BAUD,921
+# SERIAL2_OPTIONS: sin control de flujo (la RPi usa solo TX/RX/GND)
+
+# ---- GPS M10 + brújula (HGLRC M100-5883) en GPS1 ----------------------------
+# GPS
+SERIAL3_PROTOCOL,5
+# autodetección (u-blox M10)
+GPS_TYPE,1
+COMPASS_ENABLE,1
+
+# ---- Receptor (informe 4.6) ---------------------------------------------------
+# SBUS: al pin RC de la placa (SERIAL7, protocolo 23 por defecto).
+# CRSF/ELRS: necesita UART bidireccional; usa SERIAL5 (UART8) y descomenta:
+# SERIAL5_PROTOCOL,23
+# SERIAL5_BAUD,416       # CRSF (416 kbaud)
+
+# ---- Sensor de velocidad MS4525DO por I2C ------------------------------------
+# I2C-MS4525D0
+ARSPD_TYPE,1
+ARSPD_USE,1
+# autocalibra ARSPD_RATIO en los primeros vuelos; luego poner a 0
+ARSPD_AUTOCAL,1
+# Si no se detecta, comprobar ARSPD_BUS (la placa tiene dos buses I2C) y el cableado.
+
+# ---- Sensores de batería: NO fiarse de estos valores sin medir ----------------
+# El informe cita BATT_AMP_PERVLT = 66,7 y divisor 1:20 "según la ficha de Matek",
+# pero los valores por defecto de ArduPilot para esta placa (hwdef.dat) son
+# tensión x11 y corriente 40 A/V. Contrastar con la ficha de la V3 y calibrar
+# con un multímetro (tensión) y un vatímetro (corriente) antes de volar:
+#   BATT_VOLT_MULT = V_real_batería / V_leída_por_ArduPilot x BATT_VOLT_MULT_actual
+# BATT_VOLT_MULT,
+# BATT_AMP_PERVLT,66.7

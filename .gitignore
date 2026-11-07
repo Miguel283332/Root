@@ -1,0 +1,15 @@
+# Compilación y descargas
+/build/
+/external/
+__pycache__/
+*.pyc
+*.egg-info/
+.pio/
+.venv/
+venv/
+
+# Salidas locales
+/telemetria*.csv
+*.bin
+*.tlog
+*.BIN

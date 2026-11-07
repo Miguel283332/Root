@@ -1,0 +1,15 @@
+# =============================================================================
+# Root — ajustes SOLO para el simulador SITL (CMake los concatena tras la base)
+# =============================================================================
+# batería 6S llena; sin esto SITL simula 12,6 V y salta el failsafe
+SIM_BATT_VOLTAGE,25.2
+# el simulador no modela esto
+BATT_ARM_VOLT,0
+# El simulador no tiene mapas SRTM: con TERRAIN_FOLLOW activo ArduPlane no deja armar
+# ("waiting for terrain data"). En el avión real hay que copiar los .DAT a la SD.
+TERRAIN_ENABLE,0
+TERRAIN_FOLLOW,0
+# Sin emisora el failsafe de gas lleva a RTL: la prueba SITL envía RC_CHANNELS_OVERRIDE.
+# Aleatorizar un poco el viento permite probar el aterrizaje y el adelanto de suelta:
+# SIM_WIND_SPD,3
+# SIM_WIND_DIR,180
