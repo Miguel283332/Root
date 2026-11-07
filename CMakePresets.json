@@ -1,0 +1,33 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Desarrollo rápido (sin descargar ArduPilot)",
+      "binaryDir": "${sourceDir}/build/dev",
+      "cacheVariables": { "ROOT_FETCH_ARDUPILOT": "OFF", "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "ardupilot",
+      "displayName": "Con ArduPilot 4.7.2 (descarga unos cientos de MB)",
+      "binaryDir": "${sourceDir}/build/ardupilot",
+      "cacheVariables": { "ROOT_FETCH_ARDUPILOT": "ON", "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "ardupilot-sitl-tests",
+      "displayName": "Con ArduPilot y la prueba SITL de extremo a extremo",
+      "inherits": "ardupilot",
+      "binaryDir": "${sourceDir}/build/ardupilot",
+      "cacheVariables": { "ROOT_SITL_TESTS": "ON" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "dev", "configurePreset": "dev" },
+    { "name": "ardupilot", "configurePreset": "ardupilot" }
+  ],
+  "testPresets": [
+    { "name": "dev", "configurePreset": "dev", "output": { "outputOnFailure": true } },
+    { "name": "ardupilot", "configurePreset": "ardupilot", "output": { "outputOnFailure": true } }
+  ]
+}

@@ -1,0 +1,14 @@
+# Dependencias Python para compilar y simular ArduPilot (CMake las instala en build/venv).
+# Basado en Tools/environment_install/install-prereqs-ubuntu.sh de ArduPilot.
+empy==3.3.4          # versión exigida por ArduPilot (la 4.x rompe la generación de código)
+pexpect
+future
+lxml
+pymavlink
+pyserial
+intelhex
+ptyprocess
+setuptools
+openpyxl             # solo para tools/bom_from_xlsx.py
+# Consola/mapa del simulador (opcional, -DROOT_SITL_MAVPROXY=ON):
+# MAVProxy

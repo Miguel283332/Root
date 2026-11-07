@@ -1,0 +1,118 @@
+# =============================================================================
+# Root — parámetros base de ArduPlane (cualquier controladora)
+# Versión de ArduPilot de referencia: Plane-4.7.2 (ver cmake/ArduPilotVersion.cmake)
+# Origen de cada valor: informe técnico v3 (secciones 1.2, 1.5, 4.5-4.7, 9.10) salvo
+# donde se indique "AJUSTAR". Todos son valores de PARTIDA: validar en SITL y
+# en vuelo manual (FBWA) antes de confiar en AUTO.
+# Carga:  Mission Planner > Config > Full Parameter List > Load from file
+#         (o MAVProxy: param load ardupilot/params/root_plane_base.parm)
+# =============================================================================
+
+# ---- Velocidades (informe 1.2: pérdida 36 km/h, crucero 45-50 km/h) ----------
+# 45 km/h = 1,25 x V_pérdida (40 km/h se descartó: margen insuficiente)
+AIRSPEED_MIN,12.5
+# 47 km/h, dentro de 45-50 km/h de máxima autonomía
+AIRSPEED_CRUISE,13
+# 65 km/h; la hélice 18x5.5 llega a ~74 km/h teóricos sin carga
+AIRSPEED_MAX,18
+# ~30 % de gas en crucero (informe 1.1: ~150 W ~ 30 %). AJUSTAR en vuelo
+TRIM_THROTTLE,30
+# sin reversa
+THR_MIN,0
+THR_MAX,100
+
+# ---- Despegue (informe 4.7: pista recta, rotación ~12 m/s) -------------------
+# altura objetivo del despegue (m)
+TKOFF_ALT,30
+# por debajo de esta altura las alas se mantienen niveladas (m)
+TKOFF_LVL_ALT,10
+# gas máximo en el despegue automático (%)
+TKOFF_THR_MAX,100
+# m/s (43 km/h = 1,19 x V_pérdida); 0 desactivaría la rotación
+TKOFF_ROTATE_SPD,12
+
+# ---- Aterrizaje (informe 4.7: aproximación 40-45 km/h, enderezado 2-3 m) -----
+# m
+LAND_FLARE_ALT,3
+# s
+LAND_FLARE_SEC,2
+# permite abortar subiendo el gas
+LAND_ABORT_THR,1
+# m/s (43 km/h) de aproximación
+TECS_LAND_ARSPD,12
+# LAND_PITCH_DEG,         # cabeceo objetivo al tocar: AJUSTAR tras aterrizajes manuales limpios
+#                         # (en versiones antiguas se llamaba LAND_PITCH_CD, en centigrados)
+# RTL = volver y volar en círculo; el piloto aterriza a mano.
+RTL_AUTOLAND,0
+                         # El aterrizaje automático solo tras 10 aterrizajes manuales limpios (9.10b)
+# m sobre casa
+RTL_ALTITUDE,40
+
+# ---- Terreno (informe 9.10: SRTM en la SD, sin internet en vuelo) ------------
+TERRAIN_ENABLE,1
+# bit 0 = todos los modos. Copiar los .DAT de SRTM a APM/terrain/ en la SD
+TERRAIN_FOLLOW,1
+
+# ---- Failsafes (informe 9.10: radio perdida -> RTL, 3,5 V/celda -> RTL) ------
+THR_FAILSAFE,1
+THR_FS_VALUE,950
+# fallo corto: en AUTO sigue la misión; en manual, círculo
+FS_SHORT_ACTN,0
+# fallo largo (FS_LONG_TIMEOUT, 5 s por defecto): RTL
+FS_LONG_ACTN,1
+# tensión y corriente analógicas
+BATT_MONITOR,4
+# mAh (6S 10000 mAh)
+BATT_CAPACITY,10000
+# V = 3,5 V x 6 celdas
+BATT_LOW_VOLT,21
+# RTL
+BATT_FS_LOW_ACT,2
+# V = 3,3 V x 6 celdas
+BATT_CRT_VOLT,19.8
+# RTL
+BATT_FS_CRT_ACT,2
+# V = 3,8 V x 6 celdas (lista de revisión prevuelo 9.11)
+BATT_ARM_VOLT,22.8
+# La calibración del sensor (BATT_VOLT_MULT / BATT_AMP_PERVLT) depende de la placa:
+# ver matek_h743_wing_v3.parm. Un valor erróneo desactiva en silencio el failsafe.
+
+# ---- Modos de vuelo: interruptor de 3 posiciones (informe 4.6, opción A) -----
+# Un interruptor de 3 posiciones da PWM ~1000/1500/2000 => modos 1 / 4 / 6.
+FLTMODE_CH,5
+# posición baja  -> MANUAL
+FLTMODE1,0
+# (posiciones intermedias de seguridad -> FBWA)
+FLTMODE2,5
+FLTMODE3,5
+# posición media -> FBWA (estabilizado)
+FLTMODE4,5
+FLTMODE5,5
+# posición alta  -> AUTO
+FLTMODE6,10
+# interruptor aparte -> RTL (informe 4.6)
+RC7_OPTION,4
+
+# ---- Servos: convención estándar de ArduPlane (SERVOn = salida física n) -------
+# 1 alerón izq. | 2 profundidad | 3 gas (ESC) | 4 timón | 5 alerón der. | 6 tambor.
+# Es el reparto que asume el simulador SITL, así la prueba SITL ejercita el mismo mapeo.
+# OJO: el informe 4.6 nombra las salidas con el rotulado de la placa (S1..S5, M1); antes de
+# cablear, comprobar en la Matek H743-Wing V3 a qué SERVOn corresponde cada rótulo.
+SERVO1_FUNCTION,4
+SERVO2_FUNCTION,19
+SERVO3_FUNCTION,70
+SERVO3_MIN,1000
+SERVO3_MAX,2000
+SERVO4_FUNCTION,21
+SERVO5_FUNCTION,4
+# El segundo alerón va enfrentado: AJUSTAR en tierra según el montaje del servo.
+SERVO5_REVERSED,1
+# Tambor de bolas: Script 1 (lo mueve seed_dropper.lua).
+SERVO6_FUNCTION,94
+SERVO6_MIN,1000
+SERVO6_MAX,2000
+# Reposo del tambor; debe coincidir con SEED_PWM_REST.
+SERVO6_TRIM,1000
+
+# ---- Scripting Lua (dosificador de semillas con interlock) --------------------
+SCR_ENABLE,1
