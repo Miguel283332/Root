@@ -1,10 +1,13 @@
 {
   "_comentario": "Parámetros de diseño de partida (informe técnico v3). Única fuente de verdad para tools/perf_calc.py y los tests. Son estimaciones de primera aproximación (±25 %): medir en banco y en vuelo.",
-  "atmosfera": { "rho_kg_m3": 1.225, "g_m_s2": 9.81 },
+  "atmosfera": {
+    "rho_kg_m3": 1.225,
+    "g_m_s2": 9.81
+  },
   "ala": {
     "envergadura_m": 3.0,
-    "cuerda_m": 0.30,
-    "superficie_m2": 0.90,
+    "cuerda_m": 0.3,
+    "superficie_m2": 0.9,
     "alargamiento": 10,
     "perfil": "Clark Y 12 %",
     "clmax": 1.2,
@@ -23,13 +26,28 @@
     "eficiencia_motor_esc": 0.8,
     "figura_merito": 0.7,
     "corriente_max_a": 60,
-    "potencia_max_w": 1200
+    "potencia_max_w": 1200,
+    "motor_tipo": "brushless (confirmado por el propietario)",
+    "esc_tipo": "brushless 80 A, 2-6S, con BEC (confirmado por el propietario)",
+    "esc_corriente_continua_a": 80,
+    "fusible_a": 80,
+    "conector_potencia": "XT60 (60 A continuos): a gas pleno se trabaja al 90 %, valorar XT90"
   },
-  "bateria": { "capacidad_ah": 10.0, "energia_util_frac": 0.8, "masa_kg": 1.40 },
+  "bateria": {
+    "capacidad_ah": 10.0,
+    "energia_util_frac": 0.8,
+    "masa_kg": 1.4,
+    "masa_ficha_kg": 1.5,
+    "tasa_c_continua_min": 10,
+    "_nota_masa": "masa_kg = valor del informe (1,4 kg); masa_ficha_kg = la de la ficha del producto de la hoja de materiales (1,5 kg)"
+  },
   "mision": {
     "bolas": 250,
     "masa_bola_g": 10,
-    "v_crucero_kmh": [45, 50],
+    "v_crucero_kmh": [
+      45,
+      50
+    ],
     "altura_suelta_m": 30,
     "mtow_diseno_kg": 7.1,
     "mtow_max_kg": 7.5,
@@ -38,20 +56,76 @@
   "masas_kg": {
     "_nota": "x_m = posición desde el borde de ataque (+ hacia la cola). Tabla 2.2 del informe.",
     "componentes": [
-      { "nombre": "Batería 6S 10 Ah (morro, delante del ala)", "masa": 1.40, "x_m": -0.18 },
-      { "nombre": "Electrónica de vuelo", "masa": 0.45, "x_m": -0.25 },
-      { "nombre": "RPi 5 + cámara", "masa": 0.10, "x_m": -0.20 },
-      { "nombre": "Ala", "masa": 0.80, "x_m": 0.15 },
-      { "nombre": "Fuselaje", "masa": 0.40, "x_m": 0.20 },
-      { "nombre": "Empenaje", "masa": 0.20, "x_m": 0.70 },
-      { "nombre": "Motor + ESC + hélice", "masa": 0.42, "x_m": 0.90 },
-      { "nombre": "Servos (5)", "masa": 0.30, "x_m": 0.15 },
-      { "nombre": "Tolva vacía + tambor", "masa": 0.30, "x_m": 0.08 },
-      { "nombre": "Tren principal (2 conjuntos)", "masa": 0.14, "x_m": 0.12 },
-      { "nombre": "Tren de morro", "masa": 0.11, "x_m": -0.45 }
+      {
+        "nombre": "Batería 6S 10 Ah (morro, delante del ala)",
+        "masa": 1.4,
+        "x_m": -0.18
+      },
+      {
+        "nombre": "Electrónica de vuelo",
+        "masa": 0.45,
+        "x_m": -0.25
+      },
+      {
+        "nombre": "RPi 5 + cámara",
+        "masa": 0.1,
+        "x_m": -0.2
+      },
+      {
+        "nombre": "Ala",
+        "masa": 0.8,
+        "x_m": 0.15
+      },
+      {
+        "nombre": "Fuselaje",
+        "masa": 0.4,
+        "x_m": 0.2
+      },
+      {
+        "nombre": "Empenaje",
+        "masa": 0.2,
+        "x_m": 0.7
+      },
+      {
+        "nombre": "Motor + ESC + hélice",
+        "masa": 0.42,
+        "x_m": 0.9
+      },
+      {
+        "nombre": "Servos (5)",
+        "masa": 0.3,
+        "x_m": 0.15
+      },
+      {
+        "nombre": "Tolva vacía + tambor",
+        "masa": 0.3,
+        "x_m": 0.08
+      },
+      {
+        "nombre": "Tren principal (2 conjuntos)",
+        "masa": 0.14,
+        "x_m": 0.12
+      },
+      {
+        "nombre": "Tren de morro",
+        "masa": 0.11,
+        "x_m": -0.45
+      }
     ],
-    "carga_util": { "nombre": "Bolas (2,5 kg)", "masa": 2.50, "x_m": 0.08 },
-    "objetivo_cg_frac_mac": [0.25, 0.30]
+    "carga_util": {
+      "nombre": "Bolas (2,5 kg)",
+      "masa": 2.5,
+      "x_m": 0.08
+    },
+    "objetivo_cg_frac_mac": [
+      0.25,
+      0.3
+    ]
   },
-  "tren": { "via_m": 0.60, "holgura_helice_min_mm": 50, "x_principales_m": 0.12, "x_morro_m": -0.45 }
+  "tren": {
+    "via_m": 0.6,
+    "holgura_helice_min_mm": 50,
+    "x_principales_m": 0.12,
+    "x_morro_m": -0.45
+  }
 }

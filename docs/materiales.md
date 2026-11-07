@@ -73,7 +73,7 @@ cmake --build build/dev -t docs-bom   # regenera las tablas de este documento
 | Nº | Material | Especificación / uso | Cant. | P. unit. | Subtotal | Fase | Precio | Enlace |
 |--:|---|---|--:|--:|--:|:-:|:-:|---|
 | 17 | Kit XT60 con cable de silicona 14 AWG (5 pares) | Conexiones de la batería y de potencia | 1 | 9,99 € | 9,99 € | 1 | verificado | [enlace](https://www.amazon.es/conectores-hembra-alambre-silicona-bater%C3%ADa/dp/B085HF31K7) |
-| 18 | Fusible 40 A, tornillería M2/M3 y termorretráctil surtido | Montaje y protecciones | 1 | 20,00 € | 20,00 € | 1 | estimado | — |
+| 18 | Fusible 80 A de acción lenta, tornillería M2/M3 y termorretráctil surtido | Montaje y protecciones | 1 | 20,00 € | 20,00 € | 1 | estimado | — |
 
 #### Propulsión
 
@@ -141,6 +141,14 @@ Sobra material en las planchas: guárdalo para repetir piezas si fallan.
 | **CA + acelerante, epoxi de 5 min** | CA para foam; epoxi para todo lo que lleva carga (tubos de carbono, soportes del tren). |
 | **LiPo 6S 10 Ah** | La batería es el 20 % de la masa y define la autonomía (76–89 min a 45–50 km/h según el informe). |
 | **Servos metálicos de 20 kg** | Para los mandos y el tambor; ojo, el límite es 6,8 V: alimentarlos con el BEC de 6 V. |
+
+## Propulsión y alimentación: datos confirmados
+
+* **Motor BR4114 KV 400 y ESC de 80 A: ambos brushless** (confirmado por el propietario).
+* **Fusible de 80 A de acción lenta** en lugar del de 40 A del informe: a gas pleno se consumen ~54 A.
+* **Batería: tasa de descarga ≥ 10 C continuos** (se piden 5,4 C); 1,5 kg según la ficha.
+
+Cálculos y márgenes en [Propulsión](propulsion.md).
 
 ## Ya lo tienes (no incluido en el presupuesto)
 

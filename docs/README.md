@@ -22,6 +22,7 @@ La numeración es la del informe original (otras secciones se citan entre sí). 
 | Sección | Contenido |
 |---|---|
 | [00 Resumen ejecutivo](00-resumen-ejecutivo.md) | Objetivo, hélice, batería, tren, empuje, control, carga, presupuesto, tiempo |
+| [Propulsión y dimensionado eléctrico](propulsion.md) | Datos del motor BR4114, ESC, batería, fusible y márgenes (complemento del informe) |
 | [01 Viabilidad y propulsión](01-viabilidad-y-propulsion.md) | Empuje estático, velocidad, autonomía, MTOW, prestaciones |
 | [02 Diseño aerodinámico y estructural](02-diseno-aerodinamico-estructural.md) | Geometría, centro de gravedad, piezas de corte, tren de aterrizaje |
 | [03 Carga útil de reforestación](03-carga-util-reforestacion.md) | Bolas de semillas, tolva y tambor, lógica de liberación |

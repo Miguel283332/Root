@@ -29,7 +29,10 @@ add_custom_target(ardupilot-venv DEPENDS "${VENV_STAMP}")
 set(PDEF "${CMAKE_BINARY_DIR}/ardupilot/apm.pdef.xml")
 add_custom_command(
   OUTPUT "${PDEF}"
-  COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/tools/check_params.py" --genera-pdef "${AP}" "${PDEF}"
+  # Con el Python del venv: param_parse.py de ArduPilot necesita lxml, que el Python del sistema
+  # (p. ej. el de los runners de GitHub) no suele traer.
+  COMMAND "${VENV_PY}" "${CMAKE_SOURCE_DIR}/tools/check_params.py" --genera-pdef "${AP}" "${PDEF}"
+  DEPENDS "${VENV_STAMP}"
   COMMENT "Generando la metadata de parámetros de ArduPlane ${ROOT_ARDUPILOT_TAG}"
   VERBATIM)
 add_custom_target(ardupilot-pdef DEPENDS "${PDEF}")

@@ -48,7 +48,7 @@ Supone que es tu **primer avión** (incluye aprender las herramientas).
 
 Mientras llegan los pedidos (5–10 días) el repositorio permite avanzar:
 
-1. **Cerrar los pendientes de compra** ([C1–C9](discrepancias-y-pendientes.md)) y decidir el mecanismo del tambor.
+1. **Cerrar los pendientes de compra** ([C2–C9, S1–S8](discrepancias-y-pendientes.md)) y decidir el mecanismo del tambor.
 2. **Diseñar en XFLR5/OpenVSP** ([9.2](construccion/9.2-diseno-xflr5-openvsp.md)) y comprobar con
    `python3 tools/perf_calc.py` que las masas y el CG cuadran.
 3. **Imprimir en PETG** la tolva, el tambor, los bujes, los soportes del motor y del tren.

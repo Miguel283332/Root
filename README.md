@@ -29,12 +29,12 @@ Las pruebas Lua necesitan un intérprete (`apt install lua5.4`); sin él se omit
 
 | Carpeta | Contenido |
 |---|---|
-| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
+| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md), [propulsión](docs/propulsion.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
 | [`hardware/`](hardware/) | `bom/` lista de materiales (Excel + CSV) y `design/parametros.json` (datos de diseño: geometría, masas, CG) |
 | [`ardupilot/`](ardupilot/) | Parámetros `.parm`, script Lua `seed_dropper.lua` (suelta con interlock), misión de ejemplo, lanzador SITL |
 | [`companion/`](companion/README.md) | Paquete Python de la Raspberry Pi 5: telemetría MAVLink y petición de suelta |
 | [`firmware/esp32_fase1/`](firmware/esp32_fase1/README.md) | Vuelo manual (emisora → ESP32 → PCA9685) con failsafe, armado y límite de gas |
-| [`tools/`](tools/) | `perf_calc.py` (prestaciones), `bom.py` (presupuesto), `check_params.py` (validación de `.parm`) |
+| [`tools/`](tools/) | `perf_calc.py` (prestaciones, masas y dimensionado eléctrico), `bom.py` (presupuesto), `check_params.py` (validación de `.parm`) |
 | [`tests/`](tests/) | Python, Lua, C++ y la prueba de extremo a extremo en SITL |
 | [`cmake/`](cmake/) | Descarga y orquestación de ArduPilot, versión fijada |
 
@@ -61,7 +61,7 @@ Lo que se ha comprobado de verdad y lo que no:
 | CMake | Descarga con verificación de commit, venv, metadata, compilación SITL, `ctest -L sitl`, SD, docs | `ardupilot-firmware` (no hay `arm-none-eabi-gcc` en el entorno de desarrollo) |
 
 Los resultados de la verificación también destaparon problemas del propio diseño (fusible de 40 A frente
-a ~54 A de consumo, tambor de 360° con servo de 180°, ESC dudoso…): están en
+a ~54 A de consumo —ya corregido a 80 A en la lista—, tambor de 360° con servo de 180°…): están en
 [Discrepancias y pendientes](docs/discrepancias-y-pendientes.md). **Léelo antes de comprar.**
 
 ## Licencia

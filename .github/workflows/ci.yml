@@ -9,7 +9,7 @@ jobs:
     name: Pruebas del proyecto (sin ArduPilot)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Dependencias
         run: sudo apt-get update && sudo apt-get install -y lua5.4 cmake g++
       - name: Configurar, compilar y probar
@@ -22,7 +22,7 @@ jobs:
     name: Parámetros contra ArduPilot 4.7.2
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Dependencias
         run: sudo apt-get update && sudo apt-get install -y lua5.4 cmake g++
       - name: Descargar ArduPilot y validar los .parm

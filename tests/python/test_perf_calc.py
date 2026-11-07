@@ -80,8 +80,40 @@ class PruebasPrestaciones(unittest.TestCase):
         self.assertGreater(amperios, 40)
         self.assertTrue(math.isclose(amperios, 54, abs_tol=1))
 
+    def test_dimensionado_electrico(self):
+        v = self.p["celdas"] * self.p["v_nominal_celda"]
+        i_max = pc.corriente_a(self.p["potencia_max_w"], v)
+        # el ESC de 80 A deja >= 25 % de margen incluso con la batería en el umbral de failsafe (3,5 V/celda)
+        i_baja = pc.corriente_a(self.p["potencia_max_w"], self.p["celdas"] * 3.5)
+        self.assertGreaterEqual(self.p["esc_corriente_continua_a"] / i_baja, 1.25)
+        # el fusible debe cubrir la corriente máxima con holgura y no superar la capacidad del ESC
+        self.assertGreater(self.p["fusible_a"], 1.25 * i_max)
+        self.assertLessEqual(self.p["fusible_a"], self.p["esc_corriente_continua_a"])
+        # la batería debe poder entregarla con margen
+        c_pedida = i_max / D["bateria"]["capacidad_ah"]
+        self.assertGreaterEqual(D["bateria"]["tasa_c_continua_min"], 1.5 * c_pedida)
+        # el peor caso queda por debajo del límite del motor
+        self.assertLess(i_baja, self.p["corriente_max_a"])
+        self.assertIn("brushless", self.p["motor_tipo"])
+        self.assertIn("brushless", self.p["esc_tipo"])
+
+    def test_bateria_de_la_ficha_adelanta_el_cg_y_se_corrige_moviendola(self):
+        comp = [dict(c) for c in D["masas_kg"]["componentes"]]
+        comp[0]["masa"] = D["bateria"]["masa_ficha_kg"]
+        carga = D["masas_kg"]["carga_util"]
+        m_v, x_v = pc.masas_y_cg(comp)
+        m_c, x_c = pc.masas_y_cg(comp, carga)
+        self.assertAlmostEqual(m_c, 7.22, places=2)
+        self.assertLess(x_v / D["ala"]["cuerda_m"], D["masas_kg"]["objetivo_cg_frac_mac"][0])  # 24,8 % < 25 %
+        self.assertLessEqual(m_c, D["mision"]["mtow_max_kg"])
+        dx = pc.desplazamiento_para_cg(comp, carga, 0, 0.080)
+        self.assertAlmostEqual(dx * 1000, 17, delta=1)
+        comp[0]["x_m"] += dx
+        _, x_nuevo = pc.masas_y_cg(comp, carga)
+        self.assertAlmostEqual(x_nuevo, 0.080, places=4)
+
     def test_tablas_se_generan(self):
-        for f in (pc.tabla_empuje, pc.tabla_crucero, pc.tabla_masas):
+        for f in (pc.tabla_empuje, pc.tabla_crucero, pc.tabla_masas, pc.tabla_electrico):
             self.assertIn("\n", f(D))
 
 

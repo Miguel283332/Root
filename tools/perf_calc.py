@@ -7,7 +7,8 @@ Los datos salen de hardware/design/parametros.json. Son modelos de primera aprox
     python3 tools/perf_calc.py            # todas las tablas
     python3 tools/perf_calc.py empuje     # 1.1  empuje estático vs. gas
     python3 tools/perf_calc.py crucero    # 1.2/1.3/1.5  pérdida, potencia, autonomía
-    python3 tools/perf_calc.py masas      # 1.4/2.2  MTOW y centro de gravedad
+    python3 tools/perf_calc.py masas      # 1.4/2.2  MTOW y centro de gravedad (y con la batería real)
+    python3 tools/perf_calc.py electrico  # corriente, margen del ESC, fusible y tasa C de la batería
     python3 tools/perf_calc.py suelta 30 12.5   # adelanto de suelta (altura m, velocidad m/s)
 """
 from __future__ import annotations
@@ -93,6 +94,45 @@ def masas_y_cg(comp: list[dict], extra: dict | None = None) -> tuple[float, floa
     return m, sum(c["masa"] * c["x_m"] for c in items) / m
 
 
+def desplazamiento_para_cg(comp: list[dict], extra: dict | None, idx: int, x_objetivo: float) -> float:
+    """Metros que hay que mover el componente `idx` (+ hacia la cola) para que el CG sea x_objetivo."""
+    m, x = masas_y_cg(comp, extra)
+    return (x_objetivo - x) * m / comp[idx]["masa"]
+
+
+# ---------------------------------------------------------------- eléctrico
+def corriente_a(p_w: float, v: float) -> float:
+    return p_w / v
+
+
+def tabla_electrico(d: dict) -> str:
+    p, b = d["propulsion"], d["bateria"]
+    v = p["celdas"] * p["v_nominal_celda"]
+    v_min = p["celdas"] * 3.5            # umbral de failsafe de batería baja (3,5 V/celda)
+    i_max = corriente_a(p["potencia_max_w"], v)
+    i_max_baja = corriente_a(p["potencia_max_w"], v_min)
+    w = peso_n(d["mision"]["masa_calculo_prestaciones_kg"], d["atmosfera"]["g_m_s2"])
+    a, rho = d["ala"], d["atmosfera"]["rho_kg_m3"]
+    s = [f"Batería {p['celdas']}S: {v:.1f} V nominal, {b['capacidad_ah']:g} Ah ({v * b['capacidad_ah']:.0f} Wh)",
+         f"Motor: {p['motor']} — {p['motor_tipo']}",
+         f"ESC: {p['esc_tipo']}",
+         f"Corriente a gas pleno ({p['potencia_max_w']} W): {i_max:.0f} A a {v:.1f} V; "
+         f"{i_max_baja:.0f} A si la batería cae a {v_min:.1f} V (3,5 V/celda)",
+         f"  límite del motor: {p['corriente_max_a']} A -> {i_max_baja / p['corriente_max_a']:.0%} del límite en el peor caso",
+         f"  margen del ESC ({p['esc_corriente_continua_a']} A): x{p['esc_corriente_continua_a'] / i_max:.2f} "
+         f"({p['esc_corriente_continua_a'] / i_max_baja:.2f} con la batería baja; se recomienda >= 1,25)",
+         f"  tasa C pedida a la batería: {i_max / b['capacidad_ah']:.1f} C continuos "
+         f"-> exigir >= {b['tasa_c_continua_min']} C (margen x{b['tasa_c_continua_min'] / (i_max / b['capacidad_ah']):.1f})",
+         f"  fusible de potencia: {p['fusible_a']} A de acción lenta (40 A del informe saltaría: {i_max:.0f} A > 40 A)",
+         f"  conector {p['conector_potencia']}",
+         "Corriente en crucero:"]
+    for vk in (45, 50, 60):
+        pw = potencia_electrica(w, a["superficie_m2"], vk / KMH, a["cd0"], a["alargamiento"], a["e_oswald"],
+                                p["eficiencia_helice"], p["eficiencia_motor_esc"], rho)
+        s.append(f"  {vk} km/h: {pw:.0f} W -> {corriente_a(pw, v):.1f} A")
+    return "\n".join(s)
+
+
 # ---------------------------------------------------------------- informes
 def tabla_empuje(d: dict) -> str:
     p, g = d["propulsion"], d["atmosfera"]["g_m_s2"]
@@ -150,6 +190,18 @@ def tabla_masas(d: dict) -> str:
     ok = lo <= x1 / cuerda <= hi
     s.append(f"Objetivo {lo:.0%}-{hi:.0%} MAC: {'OK' if ok else 'FUERA'}; "
              f"MTOW de diseño {d['mision']['mtow_diseno_kg']} kg, máximo {d['mision']['mtow_max_kg']} kg")
+    # Escenario con la masa de la ficha de la batería (la hoja de materiales dice 1,5 kg; el informe usa 1,4 kg)
+    real = [dict(c) for c in comp]
+    real[0]["masa"] = d["bateria"]["masa_ficha_kg"]
+    m0r, x0r = masas_y_cg(real)
+    m1r, x1r = masas_y_cg(real, carga)
+    s.append(f"Con la batería de la ficha ({real[0]['masa']:g} kg): vacío {m0r:.2f} kg, CG {x0r * 1000:+.1f} mm "
+             f"({x0r / cuerda:.1%} MAC); cargado {m1r:.2f} kg, CG {x1r * 1000:+.1f} mm ({x1r / cuerda:.1%} MAC) "
+             f"-> {'OK' if lo <= x1r / cuerda <= hi and lo <= x0r / cuerda <= hi else 'FUERA del objetivo en vacío'}")
+    x_obj = x1  # el CG de referencia del informe (80 mm)
+    dx = desplazamiento_para_cg(real, carga, 0, x_obj)
+    s.append(f"  para devolver el CG a {x_obj * 1000:.0f} mm: mover la batería {dx * 1000:+.0f} mm "
+             f"(de {real[0]['x_m']:+.3f} a {real[0]['x_m'] + dx:+.3f} m)")
     return "\n".join(s)
 
 
@@ -163,7 +215,7 @@ def main(argv=None) -> int:
         print(f"Altura {h:g} m, velocidad {v:g} m/s ({v * KMH:.0f} km/h): caída {t:.2f} s, "
               f"adelanto {x:.1f} m (sin viento)")
         return 0
-    tablas = {"empuje": tabla_empuje, "crucero": tabla_crucero, "masas": tabla_masas}
+    tablas = {"empuje": tabla_empuje, "crucero": tabla_crucero, "masas": tabla_masas, "electrico": tabla_electrico}
     if cmd == "todo":
         for n, f in tablas.items():
             print(f"=== {n} ===\n{f(d)}\n")

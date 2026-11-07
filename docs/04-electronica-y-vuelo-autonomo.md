@@ -79,7 +79,7 @@ Fase 2 (automático):
 ```
 
 
-> ⚠ **Nota del repositorio:** el diagrama de fase 2 pone un «fusible 40 A», pero a gas pleno el consumo es ~54 A: se fundiría en el despegue ([S1](discrepancias-y-pendientes.md)). El reparto ESC / BEC 6 V / BEC 5 V sigue la lista de compra; los modelos de BEC no coinciden con los del texto de 9.6 ([C2, C3](discrepancias-y-pendientes.md)).
+> ⚠ **Nota del repositorio:** el diagrama de fase 2 pone un «fusible 40 A», pero a gas pleno el consumo es ~54 A: se fundiría en el despegue. La lista de materiales ya lo sustituye por uno de **80 A de acción lenta** ([S1](discrepancias-y-pendientes.md); cálculo en [Propulsión](propulsion.md)). El reparto ESC / BEC 6 V / BEC 5 V sigue la lista de compra; los modelos de BEC no coinciden con los del texto de 9.6 ([C2, C3](discrepancias-y-pendientes.md)).
 
 ## 4.5 Alimentación: puntos críticos
 

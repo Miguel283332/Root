@@ -61,6 +61,11 @@ def rangos_pdef(xml: Path) -> dict[str, tuple[float, float]]:
 
 def genera_pdef(arbol_ardupilot: Path, salida: Path) -> None:
     """Ejecuta Tools/autotest/param_metadata/param_parse.py del árbol descargado."""
+    try:
+        import lxml  # noqa: F401  (lo exige param_parse.py de ArduPilot)
+    except ImportError:
+        raise SystemExit("falta el módulo 'lxml' en este Python: usa el entorno virtual del proyecto "
+                         "(cmake --build <dir> -t ardupilot-venv) o ejecuta `pip install lxml`")
     pm = arbol_ardupilot / "Tools/autotest/param_metadata"
     subprocess.run([sys.executable, "param_parse.py", "--vehicle", "ArduPlane", "--format", "xml"],
                    cwd=pm, check=True, stdout=subprocess.DEVNULL)
