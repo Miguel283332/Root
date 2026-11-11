@@ -42,7 +42,7 @@ el menú principal: *Direct Foil Design*, *XFoil Direct Analysis* y *Wing and Pl
    Reynolds ≈ **260 000** (= velocidad 13 m/s × cuerda 0,30 m ÷ 0,000015) y haz un análisis de ángulo de
    ataque de −2° a 14°. Un *batch* con Re de 200 000 a 300 000 cubre el rango.
 3. **Definir el ala.** En *Wing and Plane Design* → `Wing/Plane → Define a new wing`: envergadura **3000 mm**,
-   cuerda **300 mm** en la raíz (y=0) y en la punta (y=1500), torsión 0°, diedro 0° (decisión pendiente, ver
+   cuerda **300 mm** en la raíz (y=0) y en la punta (y=1500), torsión 0°, diedro **2°** en cada semiala (ver
    [Decisiones de diseño](../decisiones-de-diseno.md)), perfil Clark Y en ambas estaciones.
 4. **Analizar.** `Analysis → Define an analysis`: método **VLM**, velocidad **13 m/s** (≈ 47 km/h), ángulos de
    −2° a 12° en pasos de 1°. Ejecútalo y mira la curva **CL vs α**.

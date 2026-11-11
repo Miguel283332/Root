@@ -66,7 +66,7 @@ Mientras llegan los pedidos (5–10 días) el repositorio permite avanzar:
 | Cadena | Emisora → ESP32 → PCA9685 → servos y ESC | Receptor → Matek H743 (ArduPilot) → servos y ESC; RPi 5 por MAVLink |
 | Sirve para | Aprender el avión, probar tolva, volar a mano | Estabilización, misiones, terreno, RTL, soltar con interlock |
 | Seguridad | Failsafe 0,5 s, armado por interruptor, gas ≤ 70 % (`root_safety.h`) | Failsafes de ArduPilot, interlock Lua, RTL |
-| Coste (líneas del Excel) | 708,77 € | + 212,69 € |
+| Coste (líneas del Excel) | 738,77 € | + 212,69 € |
 | Código | `firmware/esp32_fase1/` | `ardupilot/`, `companion/` |
 
 La ESP32 **no** estabiliza el avión en fase 2: reescribir el estimador de actitud y el piloto

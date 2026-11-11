@@ -140,6 +140,22 @@ def holgura_necesaria_m(cabeceo_deg: float, brazo_m: float) -> float:
     return brazo_m * math.tan(math.radians(cabeceo_deg))
 
 
+# ---------------------------------------------------------------- diedro
+def altura_punta_m(semienvergadura_m: float, diedro_deg: float) -> float:
+    """Cuánto sube la punta del ala respecto a la raíz con diedro `diedro_deg` por semiala."""
+    return semienvergadura_m * math.sin(math.radians(diedro_deg))
+
+
+def holgura_manguito_mm(semilargo_manguito_mm: float, diedro_deg: float) -> float:
+    """Holgura radial (mm) entre tubo y manguito para que los tubos de las dos semialas, inclinados
+    ±diedro respecto al eje del manguito, entren por sus bocas (pivotan en el centro)."""
+    return semilargo_manguito_mm * math.tan(math.radians(diedro_deg))
+
+
+def manguito_valido(od_tubo_mm: float, id_manguito_mm: float, semilargo_mm: float, diedro_deg: float) -> bool:
+    return (id_manguito_mm - od_tubo_mm) / 2 >= holgura_manguito_mm(semilargo_mm, diedro_deg)
+
+
 def tabla_diseno(d: dict) -> str:
     a, c, t = d["ala"], d["cola"], d["tren"]
     cg = masas_y_cg(d["masas_kg"]["componentes"], d["masas_kg"]["carga_util"])[1]
@@ -162,6 +178,10 @@ def tabla_diseno(d: dict) -> str:
          f"  CL a 45 km/h = {cl_cru:.2f} -> ángulo de ataque del perfil {incidencia_necesaria_deg(cl_cru, a['alpha0_deg'], a['alargamiento']):.1f}° "
          f"(= incidencia del ala si el fuselaje va nivelado)",
          f"  CL al despegar (1,2·Vs) = {cl_lof:.2f} -> {incidencia_necesaria_deg(cl_lof, a['alpha0_deg'], a['alargamiento']):.1f}°",
+         f"  diedro {a['diedro_deg']:g}° por semiala: la punta sube {altura_punta_m(a['envergadura_m'] / 2, a['diedro_deg']) * 1000:.0f} mm; "
+         f"el manguito necesita {holgura_manguito_mm(a['manguito_semilargo_mm'], a['diedro_deg']):.2f} mm de holgura radial",
+         f"  manguito 16/14 (holgura 1,0 mm): {'vale' if manguito_valido(12, 14, a['manguito_semilargo_mm'], a['diedro_deg']) else 'NO vale'}; "
+         f"20/18 (3,0 mm): {'vale' if manguito_valido(12, 18, a['manguito_semilargo_mm'], a['diedro_deg']) else 'NO vale'}",
          f"HÉLICE PUSHER (brazo ruedas->hélice {brazo:.2f} m)",
          f"  con la holgura del informe (50 mm): la hélice toca el suelo con solo "
          f"{cabeceo_max_sin_golpe_deg(0.050, brazo):.1f}° de cabeceo",

@@ -20,11 +20,11 @@ cmake --build build/dev -t docs-bom   # regenera las tablas de este documento
 
 <!-- BOM:START (generado con tools/bom.py --update-docs) -->
 
-**Total (líneas incluidas): 921,46 €** · presupuesto 700,00 € · diferencia -221,46 € · 462,95 € (50%) son precios **sin verificar** (estimación o sin enlace).
+**Total (líneas incluidas): 951,46 €** · presupuesto 700,00 € · diferencia -251,46 € · 492,95 € (52%) son precios **sin verificar** (estimación o sin enlace).
 
 | Categoría | Subtotal |
 |---|---:|
-| Estructura | 348,76 € |
+| Estructura | 378,76 € |
 | Herramientas | 75,09 € |
 | Cableado | 29,99 € |
 | Propulsión | 134,98 € |
@@ -32,11 +32,11 @@ cmake --build build/dev -t docs-bom   # regenera las tablas de este documento
 | Alimentación | 25,00 € |
 | Sensores | 162,69 € |
 | Electrónica | 40,00 € |
-| **Total** | **921,46 €** |
+| **Total** | **951,46 €** |
 
 | Fase | Subtotal | Qué cubre |
 |---|---:|---|
-| 1 — vuelo manual | 708,77 € | estructura, herramientas, propulsión, servos, BEC 6 V |
+| 1 — vuelo manual | 738,77 € | estructura, herramientas, propulsión, servos, BEC 6 V |
 | 2 — autónomo | 212,69 € | controladora ArduPilot, GPS, pitot, cámara, BEC 5 V |
 
 #### Estructura
@@ -56,6 +56,7 @@ cmake --build build/dev -t docs-bom   # regenera las tablas de este documento
 | 28 | Kit tren de aterrizaje triciclo (BESSTUUP, aluminio y plástico) | Prototipo del tren: morro + 2 principales (ruedas de 55 mm) | 1 | 30,00 € | 30,00 € | 1 | estimado | [enlace](https://www.amazon.es/BESSTUUP-Upgrade-Accesorios-Triciclo-aterrizaje/dp/B0BY7WBBP8) |
 | 29 | Ruedas 80–90 mm (2 principales) y 60 mm (1 de morro) | Ruedas para hierba o pista de tierra | 3 | 6,00 € | 18,00 € | 1 | estimado | — |
 | 30 | Perfil de aluminio 4 mm, 1 m | Patas del tren (2 principales de 180 mm y 1 de morro de 200 mm) | 1 | 12,00 € | 12,00 € | 1 | estimado | — |
+| 32 | Tubo de carbono mate 20 x 18 x 1000 mm (manguito central) | Manguito de 150 mm para la unión central con 2° de diedro por semiala (holgura radial 3 mm sobre los tubos de 12 mm) | 1 | 30,00 € | 30,00 € | 1 | estimado | — |
 
 #### Herramientas
 
@@ -124,6 +125,7 @@ cmake --build build/dev -t docs-bom   # regenera las tablas de este documento
 | Foam 5 mm, plancha 1200 × 600 | Horizontal 600 × 320; vertical 250 × 600 | 1 plancha | Empenaje |
 | Tubo carbono 12/10 mm | 1000 | 4 | Larguero: 2 por semiala, cada uno cruza la junta entre piezas (250 mm en cada una) |
 | Tubo carbono 16/14 mm | Botalón 500; manguitos 150 (×2) | 1 tubo de 1000 | Botalón de la cola y manguito de unión central |
+| Tubo carbono 20/18 mm | Manguito central de 150 mm | 1 tubo de 1000 | Unión central con 2° de diedro por semiala (línea 32; los tubos de 12 mm necesitan 3 mm de holgura) |
 | PETG impreso | Tolva 300 × 200 × 100 (2 piezas); tambor Ø180 con 6 celdas de 50 mm | 1 juego | Tolva, tambor, soporte del motor, bujes, soportes del tren |
 | Perfil de aluminio 4 mm | Patas principales 180 mm (×2), pata de morro 200 mm | 1 m | Tren de aterrizaje (informe 2.4 / 9.4b) |
 

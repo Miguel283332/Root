@@ -10,8 +10,8 @@ class PruebasBOM(unittest.TestCase):
         cls.lineas = bom.cargar()
 
     def test_total_coincide_con_el_excel(self):
-        # materiales_dron.xlsx (hoja 'Lista de compra', celda G37): 921,46 EUR
-        self.assertEqual(bom.total(self.lineas), 921.46)
+        # materiales_dron.xlsx (hoja 'Lista de compra', celda G37): 951,46 EUR
+        self.assertEqual(bom.total(self.lineas), 951.46)
 
     def test_categorias_suman_el_total(self):
         self.assertAlmostEqual(sum(bom.por_categoria(self.lineas).values()), bom.total(self.lineas), places=2)

@@ -45,7 +45,7 @@ Las pruebas Lua necesitan un intérprete (`apt install lua5.4`); sin él se omit
 |---|---|
 | Emisora → ESP32 → PCA9685 → servos y ESC | Matek H743-Wing (ArduPilot) + GPS + pitot; Raspberry Pi 5 por MAVLink |
 | Aprender el avión, probar la tolva | Estabilización, misiones, terreno, RTL, suelta con interlock |
-| ≈ 709 € de materiales | + ≈ 213 € |
+| ≈ 739 € de materiales | + ≈ 213 € |
 
 ## Estado de verificación
 
@@ -54,7 +54,7 @@ Lo que se ha comprobado de verdad y lo que no:
 | Pieza | Comprobado | **No** comprobado |
 |---|---|---|
 | Calculadoras (`perf_calc.py`) | Reproducen las tablas del informe (empuje, potencia, autonomía, pérdida, CG) con ≤ 5 % de error | — |
-| Presupuesto (`bom.py`) | Total 921,46 € = hoja Excel; categorías y fases suman | Precios y enlaces (se importan tal cual; el 50 % son estimaciones) |
+| Presupuesto (`bom.py`) | Total 951,46 € = hoja Excel; categorías y fases suman | Precios y enlaces (se importan tal cual; el 52 % son estimaciones) |
 | Parámetros `.parm` | Todos existen en ArduPlane 4.7.2 y respetan su rango | Que sean buenos valores para el avión real |
 | Script Lua `seed_dropper.lua` | 36 pruebas de lógica + 24 con API simulada + **vuelo completo en SITL 4.7.2**: despegue, misión, lote de 10 bolas, 10 carreras del servo, bloqueo en tierra y por velocidad | Hardware real; el simulador vuela otro avión |
 | `companion` | Pruebas unitarias; `estado`, `soltar` y `telemetria` contra SITL | UART de la Raspberry Pi 5 |

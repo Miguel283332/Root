@@ -18,6 +18,7 @@
 | Empenaje vertical    | ~0,15 m2 (0,25 × 0,60 m)        |
 | Hélice               | pusher, en la cola del fuselaje |
 | Incidencia del ala (añadido) | ≈ 4° (ver [Decisiones de diseño](decisiones-de-diseno.md)) |
+| Diedro (añadido) | **2° por semiala**: cada punta sube 52 mm; manguito central 20/18 |
 | Aleta ventral (añadido) | pequeña, bajo la cola: protege la hélice pusher |
 
 Son dimensiones de partida. Valídalas con XFLR5 y OpenVSP (guía en la sección 9.2).
@@ -64,7 +65,7 @@ Idea clave: el motor pesa mucho y está en la cola, así que la batería va en e
 
 ## 2.3 Materiales y piezas de corte
 
-La lista completa con precios, enlaces y sumatorio está en [`hardware/bom/materiales_dron.xlsx`](../hardware/bom/materiales_dron.xlsx) (hoja 'Lista de compra') y en [Materiales](materiales.md). Total base: **921,46 €**, sin envíos ni el acelerador Hailo. Supera los 700 € en unos **220 €**; ver la sección 7.
+La lista completa con precios, enlaces y sumatorio está en [`hardware/bom/materiales_dron.xlsx`](../hardware/bom/materiales_dron.xlsx) (hoja 'Lista de compra') y en [Materiales](materiales.md). Total base: **951,46 €**, sin envíos ni el acelerador Hailo. Supera los 700 € en unos **250 €**; ver la sección 7.
 
 > ⚠ **Nota del repositorio:** el informe original decía «861,46 €… unos 160 €» en esta frase (cifras de una versión anterior de la hoja); se corrigen a las de la hoja actual, que coinciden con el resumen y la sección 7 ([D1](discrepancias-y-pendientes.md)).
 
@@ -74,7 +75,9 @@ La lista completa con precios, enlaces y sumatorio está en [`hardware/bom/mater
 | Foam XPS 10 mm, plancha 1200 × 600 | Laterales 900 × 120; base y tapa 900 × 150; cuadernas 150 × 120 (x3) | 6 planchas                | Fuselaje (caja de 900 mm)                                                          |
 | Foam XPS 5 mm, plancha 1200 × 600  | Horizontal 600 × 320; vertical 250 × 600                             | 1 plancha                 | Empenaje                                                                           |
 | Tubo carbono 12/10 mm              | 1000                                                                 | 4                         | Larguero: 2 por semiala, cada uno cruza la junta entre piezas (250 mm en cada una) |
-| Tubo carbono 16/14 mm              | Botalón 500; manguitos 150 (x2)                                      | 1 tubo de 1000            | Botalón de la cola y manguito de unión central                                     |
+| Tubo carbono 16/14 mm              | Botalón 500 (**el manguito central pasa a ser 20/18 × 150, ver nota**)                                      | 1 tubo de 1000            | Botalón de la cola y manguito de unión central                                     |
+
+> ⚠ **Nota del repositorio:** con 2° de diedro por semiala los tubos de 12 mm entran inclinados en el manguito y necesitan 2,62 mm de holgura radial; el manguito 16/14 solo da 1,0 mm. Se usa un **manguito 20/18 × 150 mm** (tubo de 1 m, línea 32 de la lista; sobra material para repetir) relleno con epoxi espesado ([S10](discrepancias-y-pendientes.md), [Decisiones de diseño](decisiones-de-diseno.md)).
 | PETG impreso                       | Tolva 300 × 200 × 100 (2 piezas); tambor Ø180 con 6 celdas de 50 mm  | 1 juego                   | Tolva, tambor, soporte del motor, bujes                                            |
 
 Los cortes del foam salen de las plantillas en escala 1:1 (apartado 9.2). Sobra material en las planchas: guárdalo para repetir piezas si fallan.

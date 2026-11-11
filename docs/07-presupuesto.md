@@ -16,7 +16,9 @@ Ya tienes: motor BR4114 KV 400, hélice APC 18x5.5, emisora y transmisor, ESP32,
 | Resto (foam, películas, adhesivos, herramientas, GPS, pitot, cámara, BEC, cableado) | 375 €             |                                            |
 | **Total (sin acelerador Hailo)**                                                    | **921 €**         | Supera los 700 € en unos 220 €             |
 
-> ⚠ **Nota del repositorio:** el 50 % del total (462,95 €) son precios sin verificar y el total supera el presupuesto en **221,46 €**; solo la fase 1 cuesta 708,77 € ([C5, C6](discrepancias-y-pendientes.md)). Total y desglose reproducibles con `python3 tools/bom.py`.
+> ⚠ **Nota del repositorio:** (ver la nota siguiente: la cifra de esta tabla, 921 €, es la del informe original; la hoja de materiales vigente suma 951,46 €).
+
+> ⚠ **Nota del repositorio:** con el manguito 20/18 que exige el diedro (línea 32, 30 € estimados) el total pasa a **951,46 €**; el 52 % (492,95 €) son precios sin verificar y se supera el presupuesto en **251,46 €**; solo la fase 1 cuesta 738,77 € ([C5, C6](discrepancias-y-pendientes.md)). Total y desglose reproducibles con `python3 tools/bom.py`.
 
 Para bajar de 700 € sin tocar el objetivo de autonomía: retrasar la cámara y el pitot hasta la fase 2 (unos 70 €), usar servos más ligeros en los alerones (estimado 30–40 €) y buscar tubos de carbono de 12 mm más baratos. Son estimaciones; hay que compararlas en tienda.
 
