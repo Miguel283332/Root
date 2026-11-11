@@ -29,7 +29,8 @@ Las pruebas Lua necesitan un intérprete (`apt install lua5.4`); sin él se omit
 
 | Carpeta | Contenido |
 |---|---|
-| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md), [propulsión](docs/propulsion.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
+| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md), [propulsión](docs/propulsion.md), [decisiones de diseño](docs/decisiones-de-diseno.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
+| [`docs/principiantes/`](docs/principiantes/README.md) | **Guía desde cero**: cómo vuela un avión, glosario, programas uno por uno, taller, paso a paso y normativa |
 | [`hardware/`](hardware/) | `bom/` lista de materiales (Excel + CSV) y `design/parametros.json` (datos de diseño: geometría, masas, CG) |
 | [`ardupilot/`](ardupilot/) | Parámetros `.parm`, script Lua `seed_dropper.lua` (suelta con interlock), misión de ejemplo, lanzador SITL |
 | [`companion/`](companion/README.md) | Paquete Python de la Raspberry Pi 5: telemetría MAVLink y petición de suelta |
@@ -55,9 +56,9 @@ Lo que se ha comprobado de verdad y lo que no:
 | Calculadoras (`perf_calc.py`) | Reproducen las tablas del informe (empuje, potencia, autonomía, pérdida, CG) con ≤ 5 % de error | — |
 | Presupuesto (`bom.py`) | Total 921,46 € = hoja Excel; categorías y fases suman | Precios y enlaces (se importan tal cual; el 50 % son estimaciones) |
 | Parámetros `.parm` | Todos existen en ArduPlane 4.7.2 y respetan su rango | Que sean buenos valores para el avión real |
-| Script Lua `seed_dropper.lua` | 32 pruebas de lógica + 20 con API simulada + **vuelo completo en SITL 4.7.2**: despegue, misión, lote de 10 bolas, 10 movimientos del servo, bloqueo en tierra y por velocidad | Hardware real; el simulador vuela otro avión |
+| Script Lua `seed_dropper.lua` | 36 pruebas de lógica + 24 con API simulada + **vuelo completo en SITL 4.7.2**: despegue, misión, lote de 10 bolas, 10 carreras del servo, bloqueo en tierra y por velocidad | Hardware real; el simulador vuela otro avión |
 | `companion` | Pruebas unitarias; `estado`, `soltar` y `telemetria` contra SITL | UART de la Raspberry Pi 5 |
-| Firmware ESP32 | 40 pruebas de la lógica de seguridad en el PC; `main.cpp` compila contra stubs | PlatformIO, ESP32 real, protocolo de la emisora |
+| Firmware ESP32 | 45 pruebas de la lógica de seguridad en el PC; `main.cpp` compila contra stubs | PlatformIO, ESP32 real, protocolo de la emisora |
 | CMake | Descarga con verificación de commit, venv, metadata, compilación SITL, `ctest -L sitl`, SD, docs | `ardupilot-firmware` (no hay `arm-none-eabi-gcc` en el entorno de desarrollo) |
 
 Los resultados de la verificación también destaparon problemas del propio diseño (fusible de 40 A frente

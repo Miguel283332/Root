@@ -69,14 +69,27 @@ end
   6 celdas a 60° hace falta trinquete, reductor 2:1 o servo de rotación continua
   (ver docs/discrepancias-y-pendientes.md).
 --]]
-function M.new_dispenser(cells, pwm_rest, pwm_step)
-  local d = { cells = cells, rest = pwm_rest, step = pwm_step, index = 0 }
+function M.new_dispenser(cells, pwm_rest, pwm_step, mode)
+  local d = { cells = cells, rest = pwm_rest, step = pwm_step, index = 0, mode = mode or 0 }
+  -- Modo 0 (indexado): el servo se coloca en la celda i (rest + i*step); vale un servo de rotación
+  --   continua con realimentación o un reductor, y vuelve a la celda 0 tras la última.
+  -- Modo 1 (trinquete): un servo normal da una carrera de `step` µs y vuelve a `rest`; un trinquete
+  --   (rueda libre) convierte la carrera de ida en 1/cells de vuelta del tambor y la de vuelta no lo
+  --   mueve. Es la solución para un servo de ~180° (ver docs/discrepancias-y-pendientes.md, S2).
   function d:pwm()
+    if self.mode == 1 then return self.rest end
     return self.rest + self.index * self.step
   end
   function d:advance()
     self.index = (self.index + 1) % self.cells
+    if self.mode == 1 then return self.rest + self.step end   -- carrera de avance
     return self:pwm()
+  end
+  function d:return_pwm()      -- solo modo 1: posición a la que vuelve tras la carrera
+    return self.rest
+  end
+  function d:needs_return()
+    return self.mode == 1
   end
   return d
 end

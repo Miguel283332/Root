@@ -11,6 +11,8 @@ lista de materiales, el proceso de construcción y la documentación del softwar
 | Entender el proyecto en un minuto | [00 Resumen ejecutivo](00-resumen-ejecutivo.md) |
 | Saber **qué comprar** y cuánto cuesta | [Materiales](materiales.md) |
 | Saber **cómo se construye**, en qué orden y cuántas horas | [Proceso de elaboración](proceso-de-elaboracion.md) y [Guía de construcción](construccion/README.md) |
+| **Nunca he hecho esto**: conceptos, programas y paso a paso explicados desde cero | [Guía para principiantes](principiantes/README.md) |
+| Entender **por qué** motor detrás y cola convencional | [Decisiones de diseño](decisiones-de-diseno.md) |
 | Descargar **ArduPilot**, simular y configurar la controladora | [ArduPilot](ardupilot.md) |
 | Ver qué hay que **resolver antes de comprar o volar** | [Discrepancias y pendientes](discrepancias-y-pendientes.md) |
 

@@ -112,8 +112,38 @@ class PruebasPrestaciones(unittest.TestCase):
         _, x_nuevo = pc.masas_y_cg(comp, carga)
         self.assertAlmostEqual(x_nuevo, 0.080, places=4)
 
+    def test_cola_convencional_dentro_de_rangos_habituales(self):
+        c, a = D["cola"], D["ala"]
+        cg = pc.masas_y_cg(D["masas_kg"]["componentes"], D["masas_kg"]["carga_util"])[1]
+        lh = c["x_m"] - cg
+        self.assertTrue(0.3 <= pc.coef_volumen_horizontal(c["horizontal_m2"], lh, a["superficie_m2"], a["cuerda_m"]) <= 0.6)
+        self.assertTrue(0.02 <= pc.coef_volumen_vertical(c["vertical_m2"], lh, a["superficie_m2"], a["envergadura_m"]) <= 0.05)
+
+    def test_cola_en_v_equivalente_no_ahorra_superficie(self):
+        s_v, gamma = pc.cola_v_equivalente(0.19, 0.15)
+        self.assertAlmostEqual(s_v, 0.34, places=6)
+        self.assertAlmostEqual(gamma, 41.6, delta=0.3)
+        # comprobación: la V reparte su área en horizontal efectiva y vertical efectiva
+        g = math.radians(gamma)
+        self.assertAlmostEqual(s_v * math.cos(g) ** 2, 0.19, places=3)
+        self.assertAlmostEqual(s_v * math.sin(g) ** 2, 0.15, places=3)
+
+    def test_incidencia_del_ala(self):
+        a = D["ala"]
+        cl = pc.cl_vuelo(pc.peso_n(6.9), a["superficie_m2"], 45 / KMH)
+        self.assertAlmostEqual(pc.incidencia_necesaria_deg(cl, a["alpha0_deg"], a["alargamiento"]), 4.3, delta=0.4)
+        self.assertAlmostEqual(pc.pendiente_cl_por_grado(10), 0.090, delta=0.005)
+
+    def test_helice_pusher_golpea_el_suelo_con_la_holgura_del_informe(self):
+        brazo = D["tren"]["x_helice_m"] - D["tren"]["x_principales_m"]
+        self.assertAlmostEqual(pc.cabeceo_max_sin_golpe_deg(0.050, brazo), 3.7, delta=0.1)
+        self.assertGreater(pc.holgura_necesaria_m(15, brazo), 0.2)
+        # ida y vuelta
+        h = pc.holgura_necesaria_m(6, brazo)
+        self.assertAlmostEqual(pc.cabeceo_max_sin_golpe_deg(h, brazo), 6, places=6)
+
     def test_tablas_se_generan(self):
-        for f in (pc.tabla_empuje, pc.tabla_crucero, pc.tabla_masas, pc.tabla_electrico):
+        for f in (pc.tabla_empuje, pc.tabla_crucero, pc.tabla_masas, pc.tabla_electrico, pc.tabla_diseno):
             self.assertIn("\n", f(D))
 
 

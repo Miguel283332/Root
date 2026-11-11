@@ -39,6 +39,8 @@ struct SafetyConfig {
   uint8_t drum_cells = 6;           // informe 3.2
   uint16_t drum_rest_us = 1000;     // = SEED_PWM_REST del script de ArduPilot
   uint16_t drum_step_us = 160;      // = SEED_PWM_STEP
+  bool drum_ratchet = true;         // = SEED_MODE 1: carrera de avance y vuelta (servo normal + trinquete)
+  uint16_t drum_stroke_ms = 300;    // = SEED_STROKE
 };
 
 struct Outputs {
@@ -61,7 +63,7 @@ class Safety {
     }
     Outputs o;
     o.drum_index = drum_idx_;
-    o.us[kDrum] = drum_us();
+    o.us[kDrum] = drum_us(now_ms);
 
     const bool link_ok = have_frame_ && !last_.failsafe_flag && (uint32_t)(now_ms - last_ms_) <= cfg_.failsafe_ms;
     if (!link_ok) {                    // FAILSAFE: motor a cero, superficies a neutro
@@ -104,10 +106,11 @@ class Safety {
     const bool drop_high = in[kDropSwitch] >= cfg_.drop_on_us;
     if (armed_ && drop_high && !prev_drop_high_) {
       drum_idx_ = (uint8_t)((drum_idx_ + 1) % cfg_.drum_cells);
+      stroke_until_ms_ = now_ms + cfg_.drum_stroke_ms;
     }
     prev_drop_high_ = drop_high;   // se actualiza siempre: armar con el interruptor alto no suelta
     o.drum_index = drum_idx_;
-    o.us[kDrum] = drum_us();
+    o.us[kDrum] = drum_us(now_ms);
     return o;
   }
 
@@ -115,13 +118,22 @@ class Safety {
 
  private:
   static uint16_t clamp_us(int v) { return (uint16_t)(v < 1000 ? 1000 : (v > 2000 ? 2000 : v)); }
-  uint16_t drum_us() const { return (uint16_t)(cfg_.drum_rest_us + drum_idx_ * cfg_.drum_step_us); }
+  // Modo trinquete: carrera de `step` us durante drum_stroke_ms y vuelta a reposo (el trinquete avanza el
+  // tambor una celda en la carrera de ida). Modo indexado: el servo se coloca en la celda.
+  uint16_t drum_us(uint32_t now_ms) const {
+    if (cfg_.drum_ratchet) {
+      const bool en_carrera = stroke_until_ms_ != 0 && (int32_t)(stroke_until_ms_ - now_ms) > 0;
+      return (uint16_t)(cfg_.drum_rest_us + (en_carrera ? cfg_.drum_step_us : 0));
+    }
+    return (uint16_t)(cfg_.drum_rest_us + drum_idx_ * cfg_.drum_step_us);
+  }
 
   SafetyConfig cfg_;
   RcFrame last_;
   uint32_t last_ms_ = 0;
   bool have_frame_ = false, armed_ = false, saw_disarm_ = false, prev_drop_high_ = false;
   uint8_t drum_idx_ = 0;
+  uint32_t stroke_until_ms_ = 0;
 };
 
 // Conversión a "ticks" del PCA9685 (12 bits, periodo = 1/freq_hz).

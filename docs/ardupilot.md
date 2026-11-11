@@ -111,8 +111,8 @@ Para verlo en un mapa: instala `MAVProxy` y arranca con `-DROOT_SITL_ARGS="--con
 1. comprueba que el script Lua está cargado (`SEED_ENABLE=1`);
 2. en tierra, pide una suelta y exige que **se bloquee con motivo** (`SeedDrop: bloqueado (en tierra)`);
 3. sube la misión, arma, pasa a AUTO y vuela: despegue → 40 s de estabilización → pasillo;
-4. exige `lote de 10 bolas` + `lote completo (10 bolas)` y **exactamente 10 movimientos** del servo del
-   tambor (`SERVO6`), con la secuencia de PWM esperada `1160, 1320, 1480, 1640, 1800, 1000, 1160, …`.
+4. exige `lote de 10 bolas` + `lote completo (10 bolas)` y **10 carreras** del servo del
+   tambor (`SERVO6`), con la secuencia de PWM esperada del trinquete `1160, 1000, 1160, 1000, …` (10 carreras y vuelta a reposo).
 
 Resultado de la última ejecución: **correcto**. Esto prueba la lógica y la integración con
 ArduPlane 4.7.2, **no** el comportamiento del avión real (el modelo del simulador es otro avión).
@@ -157,8 +157,8 @@ armado**. Dejarlo a 0 en campo.
 
 **Parámetros del script** (se crean al primer arranque con `SCR_ENABLE=1`; reiniciar la controladora
 para verlos): `SEED_ENABLE`, `SEED_TEST`, `SEED_MIN_AGL`, `SEED_ASPD_MIN`, `SEED_ASPD_MAX`, `SEED_BATCH`
-(10), `SEED_PERIOD` (700 ms), `SEED_CELLS` (6), `SEED_PWM_REST` (1000 µs), `SEED_PWM_STEP` (160 µs).
-`SEED_PWM_REST` debe coincidir con `SERVO6_TRIM`. `SEED_PWM_STEP` depende del mecanismo (**ver [S2](discrepancias-y-pendientes.md)**).
+(10), `SEED_PERIOD` (700 ms), `SEED_CELLS` (6), `SEED_PWM_REST` (1000 µs), `SEED_PWM_STEP` (160 µs), `SEED_MODE` (1), `SEED_STROKE` (300 ms).
+`SEED_PWM_REST` debe coincidir con `SERVO6_TRIM`. `SEED_MODE` (**1 = trinquete**, por defecto: el servo da una carrera de `SEED_PWM_STEP` µs durante `SEED_STROKE` ms y vuelve a reposo; **0 = indexado**: el servo se coloca en cada celda, para servo continuo o reductor) y `SEED_STROKE` (300 ms) resuelven el mecanismo del tambor ([S2](discrepancias-y-pendientes.md)).
 
 Registro: cada pulso escribe una línea `SEED` en el log de la controladora (`Pulse, AGL, Arsp, Armed`).
 

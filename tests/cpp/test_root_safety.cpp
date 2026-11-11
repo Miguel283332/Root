@@ -103,8 +103,18 @@ int main() {
     CHECK(o.us[kAileronL] == 1800 && o.us[kAileronR] == 1200);
     CHECK(o.us[kElevatorOut] == 1000 && o.us[kRudderOut] == 2000); }
 
-  // --- tambor: un flanco = una celda; 6 celdas = vuelta completa; solo armado
+  // --- tambor con trinquete (servo normal): carrera de 160 us durante 300 ms y vuelta a reposo
   { Safety s; uint32_t t = arma(s);
+    RcFrame f = frame(1500, 1500, 1000, 1500, 2000, 1000); Outputs o = s.update(t + 20, &f);
+    CHECK(o.us[kDrum] == 1000);
+    f = frame(1500, 1500, 1000, 1500, 2000, 2000); o = s.update(t + 40, &f);
+    CHECK(o.us[kDrum] == 1160 && o.drum_index == 1);
+    o = s.update(t + 40 + 299, &f); CHECK(o.us[kDrum] == 1160);
+    o = s.update(t + 40 + 300, &f); CHECK(o.us[kDrum] == 1000);            // vuelve a reposo aunque el interruptor siga alto
+    f = frame(1500, 1500, 1000, 1500, 2000, 1000); o = s.update(t + 400, &f); CHECK(o.us[kDrum] == 1000 && o.drum_index == 1); }
+
+  // --- tambor indexado: un flanco = una celda; 6 celdas = vuelta completa; solo armado
+  { SafetyConfig cfg; cfg.drum_ratchet = false; Safety s(cfg); uint32_t t = arma(s);
     RcFrame f = frame(1500, 1500, 1000, 1500, 2000, 1000); Outputs o = s.update(t + 20, &f);
     CHECK(o.us[kDrum] == 1000);
     for (int i = 1; i <= 6; i++) {

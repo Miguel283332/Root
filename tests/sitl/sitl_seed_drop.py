@@ -48,12 +48,15 @@ def sube_mision(m, items):
     m.mav.mission_clear_all_send(m.target_system, m.target_component)
     m.recv_match(type="MISSION_ACK", blocking=True, timeout=5)
     m.mav.mission_count_send(m.target_system, m.target_component, len(items))
-    fin = time.time() + 30
+    fin, enviados = time.time() + 30, set()
     while time.time() < fin:
-        r = m.recv_match(type=["MISSION_REQUEST_INT", "MISSION_REQUEST", "MISSION_ACK"], blocking=True, timeout=5)
-        if r is None:
-            raise TimeoutError("la controladora no pide los elementos de la misión")
+        r = m.recv_match(type=["MISSION_REQUEST_INT", "MISSION_REQUEST", "MISSION_ACK"], blocking=True, timeout=3)
+        if r is None:                               # el arranque del simulador puede tragarse el primer COUNT
+            m.mav.mission_count_send(m.target_system, m.target_component, len(items))
+            continue
         if r.get_type() == "MISSION_ACK":          # la última petición se responde con el ACK
+            if len(enviados) < len(items):          # ACK tardío del borrado previo: ignorar
+                continue
             if r.type != mavutil.mavlink.MAV_MISSION_ACCEPTED:
                 raise RuntimeError(f"misión rechazada: {r}")
             return
@@ -61,6 +64,7 @@ def sube_mision(m, items):
         # el elemento 1 (despegue) es el "actual"; el 0 es la casa
         m.mav.mission_item_int_send(m.target_system, m.target_component, seq, frame, cmd, 1 if seq == 1 else 0, 1,
                                     p[0], p[1], p[2], p[3], lat, lon, alt)
+        enviados.add(r.seq)
     raise TimeoutError("la subida de la misión no terminó")
 
 
@@ -181,8 +185,9 @@ def main(argv=None) -> int:
         if t == "SERVO_OUTPUT_RAW":
             pwm = getattr(r, f"servo{SERVO_TAMBOR}_raw")
             if ultimo_pwm is not None and pwm != ultimo_pwm:
-                pulsos += 1
                 secuencia.append(pwm)
+                if pwm > 1000:             # modo trinquete: cada carrera de avance (por encima del reposo) = 1 bola
+                    pulsos += 1
             ultimo_pwm = pwm
         elif t == "GLOBAL_POSITION_INT":
             maxalt = max(maxalt, r.relative_alt / 1000.0)
@@ -196,7 +201,8 @@ def main(argv=None) -> int:
     comprueba(maxalt > 15, f"despega y supera la altura mínima de suelta (máx {maxalt:.0f} m)")
     comprueba(vio_inicio, "el script acepta el lote de 10 bolas en AUTO")
     comprueba(vio_fin, "el script informa 'lote completo (10 bolas)'")
-    comprueba(pulsos == 10, f"el servo del tambor se mueve 10 veces ({pulsos}; PWM: {secuencia})")
+    comprueba(pulsos == 10, f"el servo del tambor da 10 carreras de avance y vuelve a reposo ({pulsos}; PWM: {secuencia})")
+    comprueba(secuencia == [1160, 1000] * 10, "secuencia del trinquete: [1160, 1000] x 10")
     comprueba(not any("error interno" in t for t in textos), "ningún 'error interno' del script")
 
     log("RESULTADO:", "CORRECTO" if not fallos else f"{len(fallos)} fallos")
