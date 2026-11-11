@@ -13,7 +13,9 @@
     "clmax": 1.2,
     "clmax_con_flaps": 1.5,
     "cd0": 0.03,
-    "e_oswald": 0.8
+    "e_oswald": 0.8,
+    "alpha0_deg": -4.5,
+    "_nota_alpha0": "ángulo de sustentación nula del Clark Y (aprox.; confirmar en XFLR5)"
   },
   "propulsion": {
     "motor": "BR4114 KV 400",
@@ -126,6 +128,14 @@
     "via_m": 0.6,
     "holgura_helice_min_mm": 50,
     "x_principales_m": 0.12,
-    "x_morro_m": -0.45
+    "x_morro_m": -0.45,
+    "x_helice_m": 0.9,
+    "cabeceo_despegue_max_deg": 15
+  },
+  "cola": {
+    "horizontal_m2": 0.19,
+    "vertical_m2": 0.15,
+    "x_m": 0.7,
+    "_nota": "x medida desde el borde de ataque del ala (tabla 2.2); brazo = x - CG"
   }
 }

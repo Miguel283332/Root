@@ -4,6 +4,8 @@ Cómo se construye el dron de principio a fin, en qué orden, cuánto cuesta cad
 del repositorio ayuda en cada uno**. Es el resumen operativo del informe técnico (secciones 5, 8 y 9);
 el detalle de cada paso está en la [guía de construcción](construccion/README.md).
 
+> **¿Primer avión?** Empieza por la [guía para principiantes](principiantes/README.md): explica los programas, las herramientas que faltan y cada fase con más detalle.
+
 > Haz las fases **en orden**. Cada una termina con una comprobación: si no se cumple, no se sigue.
 
 ```mermaid

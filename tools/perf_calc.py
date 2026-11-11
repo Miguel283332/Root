@@ -8,6 +8,7 @@ Los datos salen de hardware/design/parametros.json. Son modelos de primera aprox
     python3 tools/perf_calc.py empuje     # 1.1  empuje estático vs. gas
     python3 tools/perf_calc.py crucero    # 1.2/1.3/1.5  pérdida, potencia, autonomía
     python3 tools/perf_calc.py masas      # 1.4/2.2  MTOW y centro de gravedad (y con la batería real)
+    python3 tools/perf_calc.py diseno     # cola (volúmenes, V equivalente), incidencia del ala, golpe de hélice
     python3 tools/perf_calc.py electrico  # corriente, margen del ESC, fusible y tasa C de la batería
     python3 tools/perf_calc.py suelta 30 12.5   # adelanto de suelta (altura m, velocidad m/s)
 """
@@ -98,6 +99,76 @@ def desplazamiento_para_cg(comp: list[dict], extra: dict | None, idx: int, x_obj
     """Metros que hay que mover el componente `idx` (+ hacia la cola) para que el CG sea x_objetivo."""
     m, x = masas_y_cg(comp, extra)
     return (x_objetivo - x) * m / comp[idx]["masa"]
+
+
+# ---------------------------------------------------------------- cola, incidencia, hélice pusher
+def coef_volumen_horizontal(sh, lh, s, cuerda):
+    return sh * lh / (s * cuerda)
+
+
+def coef_volumen_vertical(sv, lv, s, envergadura):
+    return sv * lv / (s * envergadura)
+
+
+def cola_v_equivalente(sh: float, sv: float) -> tuple[float, float]:
+    """Cola en V (o V invertida) con la misma eficacia que H+V separadas.
+
+    Una superficie de área S inclinada γ respecto a la horizontal aporta S·cos²γ de "horizontal"
+    y S·sin²γ de "vertical". Igualando: tan²γ = Sv/Sh y S = Sh + Sv. Devuelve (S total, γ en grados).
+    """
+    gamma = math.degrees(math.atan(math.sqrt(sv / sh)))
+    return sh + sv, gamma
+
+
+def pendiente_cl_por_grado(ar: float, e: float = 0.9) -> float:
+    """dCL/dα [1/°] de un ala finita (corrección de Prandtl sobre a0 = 2π/rad)."""
+    a0 = 2 * math.pi * math.pi / 180
+    return a0 / (1 + a0 * 57.2958 / (math.pi * e * ar))
+
+
+def incidencia_necesaria_deg(cl: float, alpha0_deg: float, ar: float, e: float = 0.9) -> float:
+    """Ángulo de ataque del perfil (respecto a su cuerda) para dar `cl`."""
+    return cl / pendiente_cl_por_grado(ar, e) + alpha0_deg
+
+
+def cabeceo_max_sin_golpe_deg(holgura_m: float, brazo_m: float) -> float:
+    """Cabeceo del avión al que la punta baja de la hélice pusher toca el suelo (pivota sobre las ruedas)."""
+    return math.degrees(math.atan(holgura_m / brazo_m))
+
+
+def holgura_necesaria_m(cabeceo_deg: float, brazo_m: float) -> float:
+    return brazo_m * math.tan(math.radians(cabeceo_deg))
+
+
+def tabla_diseno(d: dict) -> str:
+    a, c, t = d["ala"], d["cola"], d["tren"]
+    cg = masas_y_cg(d["masas_kg"]["componentes"], d["masas_kg"]["carga_util"])[1]
+    lh = c["x_m"] - cg
+    vh = coef_volumen_horizontal(c["horizontal_m2"], lh, a["superficie_m2"], a["cuerda_m"])
+    vv = coef_volumen_vertical(c["vertical_m2"], lh, a["superficie_m2"], a["envergadura_m"])
+    s_v, g = cola_v_equivalente(c["horizontal_m2"], c["vertical_m2"])
+    w = peso_n(d["mision"]["masa_calculo_prestaciones_kg"], d["atmosfera"]["g_m_s2"])
+    vs = v_perdida(w, a["superficie_m2"], a["clmax"])
+    cl_cru = cl_vuelo(w, a["superficie_m2"], 45 / KMH)
+    cl_lof = cl_vuelo(w, a["superficie_m2"], 1.2 * vs)
+    brazo = t["x_helice_m"] - t["x_principales_m"]
+    s = [f"COLA (brazo desde el CG: {lh:.2f} m)",
+         f"  coef. de volumen horizontal V_H = {vh:.2f}  (rango habitual 0,3-0,6)",
+         f"  coef. de volumen vertical   V_V = {vv:.3f} (rango habitual 0,02-0,05)",
+         f"  cola en V equivalente: {s_v:.2f} m² totales a {g:.0f}° de la horizontal "
+         f"(H+V actuales: {c['horizontal_m2'] + c['vertical_m2']:.2f} m²) -> no ahorra superficie",
+         "ALA",
+         f"  dCL/dα = {pendiente_cl_por_grado(a['alargamiento']):.3f} por grado (AR {a['alargamiento']})",
+         f"  CL a 45 km/h = {cl_cru:.2f} -> ángulo de ataque del perfil {incidencia_necesaria_deg(cl_cru, a['alpha0_deg'], a['alargamiento']):.1f}° "
+         f"(= incidencia del ala si el fuselaje va nivelado)",
+         f"  CL al despegar (1,2·Vs) = {cl_lof:.2f} -> {incidencia_necesaria_deg(cl_lof, a['alpha0_deg'], a['alargamiento']):.1f}°",
+         f"HÉLICE PUSHER (brazo ruedas->hélice {brazo:.2f} m)",
+         f"  con la holgura del informe (50 mm): la hélice toca el suelo con solo "
+         f"{cabeceo_max_sin_golpe_deg(0.050, brazo):.1f}° de cabeceo",
+         f"  holgura necesaria para {t['cabeceo_despegue_max_deg']}° de rotación (LVL_PITCH de ArduPilot): "
+         f"{holgura_necesaria_m(t['cabeceo_despegue_max_deg'], brazo) * 1000:.0f} mm",
+         f"  holgura para 5° de rotación: {holgura_necesaria_m(5, brazo) * 1000:.0f} mm"]
+    return "\n".join(s)
 
 
 # ---------------------------------------------------------------- eléctrico
@@ -215,7 +286,7 @@ def main(argv=None) -> int:
         print(f"Altura {h:g} m, velocidad {v:g} m/s ({v * KMH:.0f} km/h): caída {t:.2f} s, "
               f"adelanto {x:.1f} m (sin viento)")
         return 0
-    tablas = {"empuje": tabla_empuje, "crucero": tabla_crucero, "masas": tabla_masas, "electrico": tabla_electrico}
+    tablas = {"empuje": tabla_empuje, "crucero": tabla_crucero, "masas": tabla_masas, "electrico": tabla_electrico, "diseno": tabla_diseno}
     if cmd == "todo":
         for n, f in tablas.items():
             print(f"=== {n} ===\n{f(d)}\n")

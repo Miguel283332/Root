@@ -48,12 +48,15 @@ def sube_mision(m, items):
     m.mav.mission_clear_all_send(m.target_system, m.target_component)
     m.recv_match(type="MISSION_ACK", blocking=True, timeout=5)
     m.mav.mission_count_send(m.target_system, m.target_component, len(items))
-    fin = time.time() + 30
+    fin, enviados = time.time() + 30, set()
     while time.time() < fin:
-        r = m.recv_match(type=["MISSION_REQUEST_INT", "MISSION_REQUEST", "MISSION_ACK"], blocking=True, timeout=5)
-        if r is None:
-            raise TimeoutError("la controladora no pide los elementos de la misión")
+        r = m.recv_match(type=["MISSION_REQUEST_INT", "MISSION_REQUEST", "MISSION_ACK"], blocking=True, timeout=3)
+        if r is None:                               # el arranque del simulador puede tragarse el primer COUNT
+            m.mav.mission_count_send(m.target_system, m.target_component, len(items))
+            continue
         if r.get_type() == "MISSION_ACK":          # la última petición se responde con el ACK
+            if len(enviados) < len(items):          # ACK tardío del borrado previo: ignorar
+                continue
             if r.type != mavutil.mavlink.MAV_MISSION_ACCEPTED:
                 raise RuntimeError(f"misión rechazada: {r}")
             return
@@ -61,6 +64,7 @@ def sube_mision(m, items):
         # el elemento 1 (despegue) es el "actual"; el 0 es la casa
         m.mav.mission_item_int_send(m.target_system, m.target_component, seq, frame, cmd, 1 if seq == 1 else 0, 1,
                                     p[0], p[1], p[2], p[3], lat, lon, alt)
+        enviados.add(r.seq)
     raise TimeoutError("la subida de la misión no terminó")
 
 

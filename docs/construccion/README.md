@@ -22,5 +22,7 @@ citan desde otras secciones.
 | [9.10b Despegue y aterrizaje autónomos](9.10b-despegue-y-aterrizaje-autonomos.md) | (incl.) | SITL, parámetros, FBWA → AUTO | 10 aterrizajes manuales limpios |
 | [9.11 Lista de revisión antes de cada vuelo](9.11-checklist-prevuelo.md) | — | Checklist | — |
 
+¿Nunca has hecho algo así? Lee antes la [guía para principiantes](../principiantes/README.md) (más detalle, glosario y errores típicos).
+
 Ver también: [Proceso de elaboración](../proceso-de-elaboracion.md) · [Materiales](../materiales.md) ·
 [Discrepancias y pendientes](../discrepancias-y-pendientes.md).

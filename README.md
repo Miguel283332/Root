@@ -29,7 +29,8 @@ Las pruebas Lua necesitan un intérprete (`apt install lua5.4`); sin él se omit
 
 | Carpeta | Contenido |
 |---|---|
-| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md), [propulsión](docs/propulsion.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
+| [`docs/`](docs/README.md) | Informe técnico por secciones, [materiales](docs/materiales.md), [proceso de elaboración](docs/proceso-de-elaboracion.md), [guía de construcción](docs/construccion/README.md), [ArduPilot](docs/ardupilot.md), [propulsión](docs/propulsion.md), [decisiones de diseño](docs/decisiones-de-diseno.md) y [**discrepancias y pendientes**](docs/discrepancias-y-pendientes.md) |
+| [`docs/principiantes/`](docs/principiantes/README.md) | **Guía desde cero**: cómo vuela un avión, glosario, programas uno por uno, taller, paso a paso y normativa |
 | [`hardware/`](hardware/) | `bom/` lista de materiales (Excel + CSV) y `design/parametros.json` (datos de diseño: geometría, masas, CG) |
 | [`ardupilot/`](ardupilot/) | Parámetros `.parm`, script Lua `seed_dropper.lua` (suelta con interlock), misión de ejemplo, lanzador SITL |
 | [`companion/`](companion/README.md) | Paquete Python de la Raspberry Pi 5: telemetría MAVLink y petición de suelta |

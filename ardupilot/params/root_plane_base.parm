@@ -30,6 +30,13 @@ TKOFF_LVL_ALT,10
 TKOFF_THR_MAX,100
 # m/s (43 km/h = 1,19 x V_pérdida); 0 desactivaría la rotación
 TKOFF_ROTATE_SPD,12
+# Cabeceo de subida tras rotar en modo TAKEOFF. En AUTO lo fija el param1 del comando TAKEOFF de la misión.
+# Con la hélice pusher y 50 mm de holgura el avión solo puede cabecear ~3,7 grados sin que la hélice
+# toque el suelo (python3 tools/perf_calc.py diseno): 5 grados exigen >= 70 mm; el valor por defecto
+# de ArduPilot (15 grados) exigiría 210 mm. Ver docs/decisiones-de-diseno.md.
+TKOFF_LVL_PITCH,5
+# Cabeceo objetivo mientras acelera por la pista, antes de rotar.
+TKOFF_GND_PITCH,0
 
 # ---- Aterrizaje (informe 4.7: aproximación 40-45 km/h, enderezado 2-3 m) -----
 # m
