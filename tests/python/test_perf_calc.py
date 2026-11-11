@@ -142,6 +142,15 @@ class PruebasPrestaciones(unittest.TestCase):
         h = pc.holgura_necesaria_m(6, brazo)
         self.assertAlmostEqual(pc.cabeceo_max_sin_golpe_deg(h, brazo), 6, places=6)
 
+    def test_diedro_de_2_grados_exige_manguito_20_18(self):
+        a = D["ala"]
+        self.assertEqual(a["diedro_deg"], 2.0)
+        self.assertAlmostEqual(pc.altura_punta_m(1.5, 2.0) * 1000, 52, delta=1)
+        self.assertAlmostEqual(pc.holgura_manguito_mm(a["manguito_semilargo_mm"], 2.0), 2.62, delta=0.02)
+        self.assertFalse(pc.manguito_valido(12, 14, 75, 2.0))     # 16/14: solo 1,0 mm de holgura
+        self.assertFalse(pc.manguito_valido(12, 14, 75, 1.0))     # ni siquiera 1 grado (1,31 mm)
+        self.assertTrue(pc.manguito_valido(12, 18, 75, 2.0))      # 20/18: 3,0 mm
+
     def test_tablas_se_generan(self):
         for f in (pc.tabla_empuje, pc.tabla_crucero, pc.tabla_masas, pc.tabla_electrico, pc.tabla_diseno):
             self.assertIn("\n", f(D))

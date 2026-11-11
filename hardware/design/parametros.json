@@ -15,7 +15,9 @@
     "cd0": 0.03,
     "e_oswald": 0.8,
     "alpha0_deg": -4.5,
-    "_nota_alpha0": "ángulo de sustentación nula del Clark Y (aprox.; confirmar en XFLR5)"
+    "_nota_alpha0": "ángulo de sustentación nula del Clark Y (aprox.; confirmar en XFLR5)",
+    "diedro_deg": 2.0,
+    "manguito_semilargo_mm": 75
   },
   "propulsion": {
     "motor": "BR4114 KV 400",

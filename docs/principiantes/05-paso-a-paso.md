@@ -12,7 +12,7 @@ Si una comprobación falla, **no sigas**: corrígelo antes.
 **Necesitas:** XFLR5, OpenVSP, `clarky.dat`, impresora o copistería ([03](03-programas.md)).
 
 1. Instala XFLR5 y OpenVSP; instala el repositorio (`ctest` en verde).
-2. En XFLR5, carga el perfil **Clark Y**, haz la polar a Re ≈ 260 000 y define el ala de 3000 × 300 mm.
+2. En XFLR5, carga el perfil **Clark Y**, haz la polar a Re ≈ 260 000 y define el ala de 3000 × 300 mm con **diedro 2°**.
 3. Analiza de −2° a 12° y apunta **CLmax** y el ángulo con CL ≈ 0,8 (será tu **incidencia, ~4°**).
 4. En OpenVSP monta ala, fuselaje y cola con las cotas del informe; mira que quede **simétrico**.
 5. Genera la plantilla: `python3 tools/plantilla_perfil.py clarky.dat --cuerda 300`.
@@ -46,12 +46,16 @@ CA, epoxi, tubos de carbono 12/10 mm, película termorretráctil, secador o pist
    fresa. **Pruébalo con el tubo de carbono** antes de pegar: debe entrar sin holgura.
 6. **Unir los bloques de cada semiala** con CA por el borde, apoyados sobre una **mesa plana**. Pon el tubo de
    12 mm en el canal de modo que **cruce la junta** (250 mm a cada lado) y pégalo con **epoxi**.
-7. **Unión central.** Une las dos semialas con el manguito de carbono de 16 mm (interior 14 mm, 150 mm de
-   largo) cubriendo las puntas de los dos tubos; epoxi y **24 h de curado** sin tocar.
+7. **Unión central con diedro de 2°.** Antes de pegar, **lija la cara de la raíz de cada semiala** apoyándola con
+   la punta **52 mm por encima de la mesa** y la cara contra un tablero vertical. Une las dos semialas con el
+   manguito de carbono de **20 mm (interior 18 mm, 150 mm de largo)** relleno de **epoxi espesado**, con las puntas
+   calzadas 52 mm; **24 h de curado** sin tocar. Comprueba que cada punta queda 52 ± 5 mm sobre la raíz.
 8. **Forrar.** Fija el borde de la película con cinta, calienta **a temperatura media** con el secador y alisa
    **del centro hacia fuera**. Si hay arrugas, vuelve a calentar; si se quema, bajaste demasiado el calor.
    Forra arriba y abajo.
 9. **Pesa el ala:** objetivo **≤ 0,8 kg**.
+10. **Prueba de carga:** apoya el ala por el centro y carga las semialas con ~21 kg (3 veces el peso del avión)
+    repartidos; no debe romperse ni deformarse, ni moverse la unión central.
 
 **Está bien cuando:** apoyada en una mesa plana el alabeo es **≤ 3 mm**, el perfil se parece al de la
 plantilla en las dos puntas y el ala pesa ≤ 0,8 kg. **Errores típicos:** perfiles distintos a cada lado

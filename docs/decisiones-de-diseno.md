@@ -13,7 +13,7 @@ estimaciones de primera aproximación que hay que validar en XFLR5/OpenVSP.
 | Cola | **Convencional (horizontal + vertical)** para el Mk. 1; **V invertida** como mejora del Mk. 2 | Mínimo riesgo y ArduPilot la trae resuelta; la V no ahorra superficie |
 | Cola en T | **No** | Aleta pesada y flexible en foam, riesgo de entrada en pérdida profunda y no es del MQ-9 |
 | Ala | **Incidencia de ~4°** (no estaba en el informe) | Con el fuselaje nivelado en crucero el ala ya da la sustentación |
-| Diedro | **Decidir antes de cortar** (2–3° por semiala recomendados para la fase 1) | Sin estabilización electrónica, un ala recta es poco estable en alabeo; ver [S10](discrepancias-y-pendientes.md) |
+| Diedro | **2° por semiala** (4° en total), con manguito central **20/18** | Sin estabilización electrónica en la fase 1, un ala recta es poco estable en alabeo; 2° es lo habitual en un avión estable con alerones |
 | Despegue | **Sin rotación brusca**: cabeceo ≤ 5° y holgura de hélice ≥ 70–100 mm | Con 50 mm la hélice toca el suelo a solo 3,7° |
 | Aleta ventral | **Añadir una pequeña** bajo la cola | Protege la hélice (el MQ-9 la lleva por esa razón) |
 
@@ -60,6 +60,26 @@ Si el ala se monta con **~4° de incidencia**, el avión vuela **con el fuselaje
 resistencia) y **despega casi sin rotar** (solo ~1° más). Sin incidencia habría que cabecear ~4–5° en vuelo y
 ~5° al despegar. Pasos: fijar 4° en XFLR5/OpenVSP ([9.2](construccion/9.2-diseno-xflr5-openvsp.md)), marcarlo en
 las plantillas y montar el ala con calzos que den esos 4° ([9.3](construccion/9.3-ala.md)).
+
+### Diedro: decisión (S10)
+
+**Decisión: 2° de diedro por semiala** (cada punta sube **52 mm** sobre la raíz).
+
+* **Por qué:** en la fase 1 el avión se vuela sin estabilización electrónica; el diedro hace que un alabeo
+  involuntario se corrija solo. 2° es un valor habitual para un avión estable con alerones y poca complicación
+  de construcción; más (3° o más) acopla demasiado guiñada y alabeo.
+* **Consecuencia estructural (calculada con `python3 tools/perf_calc.py diseno`):** los tubos de 12 mm de las
+  dos semialas entran inclinados ±2° en el manguito central. Pivotan en el centro, así que en cada boca del
+  manguito (75 mm) se desplazan **2,62 mm**. El manguito 16/14 del informe solo da **1,0 mm** de holgura (no
+  admite ni 1°, que exigiría 1,31 mm). Hace falta un **manguito 20/18 × 150 mm** (3,0 mm de holgura), que se
+  rellena con epoxi espesado (fibras o microbalones). Añadido a la lista de materiales (línea 32,
+  30 € estimados, sin enlace).
+* **Plan B si el manguito 20/18 no se consigue o la unión no inspira confianza:** construir el ala recta
+  (0°) y hacer los **primeros vuelos con ArduPilot en FBWA** (que estabiliza el alabeo), lo que obliga a
+  adelantar la controladora (línea 24) a la fase 1.
+* **Efecto aerodinámico:** la pérdida de sustentación vertical es cos 2° = 0,9994: despreciable.
+* **No validado:** la resistencia de la unión central no se ha calculado ni ensayado. Hay que hacer la
+  **prueba de carga** de [9.3](construccion/9.3-ala.md) antes del primer vuelo.
 
 ## 3. El problema de la hélice pusher en el despegue
 

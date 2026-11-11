@@ -13,6 +13,8 @@
 | Control            | Emisora + ESP32 + PCA9685 para el vuelo manual; controladora ArduPilot para el autónomo | Ver sección 4                                                                   |
 | Carga útil         | 250 bolas de 10 g (2,5 kg) en una tolva de unos 6 L                                     | Tambor de 6 celdas accionado por servo                                          |
 | Presupuesto        | ≈ 921 € con los precios encontrados (hoja de cálculo)                                   | Supera 700 € en unos 220 €; ver sección 7                                       |
+
+> ⚠ **Nota del repositorio:** con el manguito del diedro (decisión S10) el total de la hoja de materiales es **951,46 €** (251 € por encima de 700 €).
 | Tiempo             | Unas 60–85 horas de trabajo                                                             | Ver sección 8                                                                   |
 
 > Supuestos: BR4114 KV 400, batería 6S nominal 22,2 V (8S = 29,6 V), densidad del aire a nivel del mar 1,225 kg/m3, eficiencia de la hélice ~0,6 a estas velocidades, eficiencia motor+ESC ~0,8. Son estimaciones de primera aproximación (±25 %). Hay que medirlas en banco y en vuelo.
