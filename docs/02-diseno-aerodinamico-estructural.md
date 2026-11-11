@@ -17,6 +17,8 @@
 | Empenaje horizontal  | ~0,19 m2 (0,60 × 0,32 m)        |
 | Empenaje vertical    | ~0,15 m2 (0,25 × 0,60 m)        |
 | Hélice               | pusher, en la cola del fuselaje |
+| Incidencia del ala (añadido) | ≈ 4° (ver [Decisiones de diseño](decisiones-de-diseno.md)) |
+| Aleta ventral (añadido) | pequeña, bajo la cola: protege la hélice pusher |
 
 Son dimensiones de partida. Valídalas con XFLR5 y OpenVSP (guía en la sección 9.2).
 
@@ -92,7 +94,9 @@ Triciclo fijo: un tren de morro y dos principales bajo el ala. Con la hélice en
 | Ruedas principales                | 80–90 mm de diámetro                                              |
 | Rueda de morro                    | 60 mm de diámetro                                                 |
 | Masa total                        | ≈ 0,25 kg (0,14 principales + 0,11 morro)                         |
-| Holgura de la hélice              | ≥ 50 mm entre la punta inferior de la hélice y el suelo           |
+| Holgura de la hélice              | ≥ 50 mm entre la punta inferior de la hélice y el suelo (**ver nota: usar ≥ 70–100 mm**) |
+
+> ⚠ **Nota del repositorio:** con 50 mm de holgura la hélice pusher toca el suelo con solo 3,7° de cabeceo (brazo 0,78 m desde las ruedas principales); 5° exigen 68 mm y 15° (el valor por defecto de ArduPilot) 209 mm. Usa **≥ 70–100 mm**, limita el cabeceo de despegue a 5° y añade una aleta ventral ([S9](discrepancias-y-pendientes.md), [Decisiones de diseño](decisiones-de-diseno.md)).
 
 Materiales: patas de aluminio de 4 mm (perfil en L), soportes de PETG impresos, ruedas de 80–90 mm con eje de 5 mm y tuerca M5. El kit triciclo de 55 mm sirve para probar la rodadura, pero para 7 kg las ruedas de 80–90 mm se comportan mejor en hierba.
 

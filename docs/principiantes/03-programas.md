@@ -79,8 +79,8 @@ sobre un tablero fino (contrachapado de 3 mm, cartón pluma) y recórtalo: ésa 
 
 * **Tinkercad** (tinkercad.com, gratis, en el navegador) es lo más fácil: arrastras cajas y cilindros y
   restas huecos. Tolva: caja de **300 × 200 × 100 mm** con embudo inferior a 45°; tambor: disco de
-  **Ø180 mm** con **6 celdas de 50 mm** y eje de 8 mm. **Antes de dibujar el tambor, resuelve el mecanismo
-  del servo** ([pendiente S2](../discrepancias-y-pendientes.md)).
+  **Ø180 mm** con **6 celdas de 50 mm** y eje de 8 mm. **El tambor lleva un trinquete** (rueda libre) para que
+  un servo normal lo haga avanzar ([S2](../discrepancias-y-pendientes.md)).
 * **FreeCAD** (gratis) o **Fusion** (gratis para uso personal) son más potentes y más difíciles.
 * Exporta cada pieza como **STL**.
 

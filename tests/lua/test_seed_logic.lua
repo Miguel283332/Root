@@ -57,6 +57,13 @@ check(posiciones[1] == 1160 and posiciones[5] == 1800, "avanza 160 us por celda"
 check(posiciones[6] == 1000, "tras 6 pulsos vuelve a la celda 0")
 check(posiciones[7] == 1160, "y sigue")
 
+-- ---- tambor en modo trinquete (servo normal): carrera de avance y vuelta ----
+local r = seed.new_dispenser(6, 1000, 160, 1)
+check(r:pwm() == 1000 and r:needs_return(), "trinquete: reposo en 1000 us")
+check(r:advance() == 1160 and r:return_pwm() == 1000, "trinquete: carrera de 160 us y vuelta a reposo")
+check(r:advance() == 1160 and r.index == 2, "trinquete: cada carrera cuenta una celda")
+check(not seed.new_dispenser(6, 1000, 160, 0):needs_return(), "modo indexado: sin vuelta")
+
 -- ---- lote: cadencia y conteo ----
 local b = seed.new_batch(3, 700, 1000)
 check(seed.batch_due(b, 1000), "el primer pulso sale enseguida")

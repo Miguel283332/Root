@@ -27,7 +27,9 @@
     SEED_PERIOD   ms entre pulsos                       [700, informe: 0,5-1 s]
     SEED_CELLS    celdas del tambor                     [6]
     SEED_PWM_REST PWM de la celda 0 (µs)                [1000]
-    SEED_PWM_STEP incremento de PWM por celda (µs)      [160 ~ 60° en un servo de 1000-2000 µs/~375°; AJUSTAR]
+    SEED_PWM_STEP modo 0: incremento de PWM por celda; modo 1: amplitud de la carrera (µs) [160; AJUSTAR]
+    SEED_MODE     0 indexado (servo continuo/reductor) | 1 trinquete: carrera y vuelta (servo normal) [1]
+    SEED_STROKE   modo 1: ms que se mantiene la carrera antes de volver (< SEED_PERIOD)        [300]
 --]]
 
 local seed = require("seed_logic")
@@ -47,6 +49,7 @@ local MAV_SEVERITY = { ERROR = 3, WARNING = 4, INFO = 6 }
 local DEFAULTS = {
   { "ENABLE", 1 }, { "TEST", 0 }, { "MIN_AGL", 15 }, { "ASPD_MIN", 11.5 }, { "ASPD_MAX", 16 },
   { "BATCH", 10 }, { "PERIOD", 700 }, { "CELLS", 6 }, { "PWM_REST", 1000 }, { "PWM_STEP", 160 },
+  { "MODE", 1 }, { "STROKE", 300 },
 }
 assert(param:add_table(PARAM_TABLE_KEY, PARAM_PREFIX, #DEFAULTS), SCRIPT_NAME .. ": no se pudo crear la tabla de parámetros")
 local P = {}
@@ -69,7 +72,8 @@ if servo_channel == nil then
   gcs:send_text(MAV_SEVERITY.ERROR, SCRIPT_NAME .. ": ningun SERVOx_FUNCTION=94 (tambor)")
 end
 
-local dispenser = seed.new_dispenser(P.CELLS:get(), P.PWM_REST:get(), P.PWM_STEP:get())
+local dispenser = seed.new_dispenser(P.CELLS:get(), P.PWM_REST:get(), P.PWM_STEP:get(), P.MODE:get())
+local return_at = nil          -- modo trinquete: instante en que el servo vuelve a reposo
 local batch = nil
 local last_aux_pos = nil
 local last_block_reason = nil
@@ -135,6 +139,12 @@ local function update()
     end
   end
 
+  -- 1b) Modo trinquete: terminada la carrera de avance, el servo vuelve a reposo
+  if return_at ~= nil and now >= return_at then
+    mover_tambor(dispenser:return_pwm())
+    return_at = nil
+  end
+
   -- 2) Ejecutar el lote en curso (el interlock se vuelve a evaluar en CADA pulso)
   if batch ~= nil and seed.batch_due(batch, now) then
     local s = estado_avion()
@@ -144,6 +154,7 @@ local function update()
       seed.batch_abort(batch)
     else
       mover_tambor(dispenser:advance())
+      if dispenser:needs_return() then return_at = now + math.min(P.STROKE:get(), P.PERIOD:get() - UPDATE_MS) end
       seed.batch_pulse(batch, now)
       logger:write("SEED", "Pulse,AGL,Arsp,Armed", "BffB", batch.done, s.agl or -1, s.airspeed or -1, s.armed and 1 or 0)
       if batch.remaining == 0 then

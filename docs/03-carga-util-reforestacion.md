@@ -18,7 +18,7 @@
 | A. Compuerta basculante          | Un servo abre una compuerta en la base de la tolva                    | Muy simple                              | Suelta todo de golpe; sin dosificación |
 | B. Tambor indexado (recomendada) | Tambor de 6 celdas; el servo gira 60 grados por pulso y suelta 1 bola | Dosificación exacta; control por evento | Algo más de impresión 3D               |
 
-> ⚠ **Nota del repositorio:** un servo de 20 kg gira ~180°, no los 360° que necesita un tambor de 6 celdas a 60° por pulso. Hay que decidir el mecanismo (servo de rotación continua, trinquete o reductor 2:1) antes de imprimir ([S2](discrepancias-y-pendientes.md)).
+> ⚠ **Nota del repositorio:** un servo de 20 kg gira ~180°, no los 360° que necesita un tambor de 6 celdas a 60° por pulso. **Solución adoptada en el software: trinquete.** Un servo normal da una carrera de avance y vuelve a reposo; una rueda libre convierte cada carrera en 1/6 de vuelta del tambor (`SEED_MODE = 1`, `SEED_PWM_STEP` = amplitud, `SEED_STROKE` = duración). Si usas un servo de rotación continua o un reductor, `SEED_MODE = 0` ([S2](discrepancias-y-pendientes.md)). El diseño mecánico del trinquete debe imprimirse y probarse en seco (10 pulsos = 10 bolas).
 
 ## 3.3 Esquema del tambor
 

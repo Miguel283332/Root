@@ -185,8 +185,9 @@ def main(argv=None) -> int:
         if t == "SERVO_OUTPUT_RAW":
             pwm = getattr(r, f"servo{SERVO_TAMBOR}_raw")
             if ultimo_pwm is not None and pwm != ultimo_pwm:
-                pulsos += 1
                 secuencia.append(pwm)
+                if pwm > 1000:             # modo trinquete: cada carrera de avance (por encima del reposo) = 1 bola
+                    pulsos += 1
             ultimo_pwm = pwm
         elif t == "GLOBAL_POSITION_INT":
             maxalt = max(maxalt, r.relative_alt / 1000.0)
@@ -200,7 +201,8 @@ def main(argv=None) -> int:
     comprueba(maxalt > 15, f"despega y supera la altura mínima de suelta (máx {maxalt:.0f} m)")
     comprueba(vio_inicio, "el script acepta el lote de 10 bolas en AUTO")
     comprueba(vio_fin, "el script informa 'lote completo (10 bolas)'")
-    comprueba(pulsos == 10, f"el servo del tambor se mueve 10 veces ({pulsos}; PWM: {secuencia})")
+    comprueba(pulsos == 10, f"el servo del tambor da 10 carreras de avance y vuelve a reposo ({pulsos}; PWM: {secuencia})")
+    comprueba(secuencia == [1160, 1000] * 10, "secuencia del trinquete: [1160, 1000] x 10")
     comprueba(not any("error interno" in t for t in textos), "ningún 'error interno' del script")
 
     log("RESULTADO:", "CORRECTO" if not fallos else f"{len(fallos)} fallos")

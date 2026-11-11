@@ -30,7 +30,10 @@ SRV_Channels = {
 }
 param = {
   add_table = function() return true end,
-  add_param = function(_, _, _, name, default) params["SEED_" .. name] = default; return true end,
+  add_param = function(_, _, _, name, default)
+    if params["SEED_" .. name] == nil then params["SEED_" .. name] = default end   -- como ArduPilot: no pisa el valor guardado
+    return true
+  end,
 }
 function Parameter()
   local o = {}
@@ -57,6 +60,11 @@ local function avanza(ms)            -- ejecuta el bucle cada 50 ms durante `ms`
   end
 end
 local function dispara(pos) aux = pos; avanza(50) end
+local function carreras()        -- pulsos = carreras de avance del servo (PWM por encima del reposo de 1000 us)
+  local n = 0
+  for i = 2, #pwm_log do if pwm_log[i] > 1000 then n = n + 1 end end
+  return n
+end
 local function contiene(txt)
   for _, m in ipairs(mensajes) do if m:find(txt, 1, true) then return true end end
   return false
@@ -68,58 +76,69 @@ local function check(c, n) total = total + 1; if not c then fallos = fallos + 1;
 -- 1) en reposo no mueve nada más allá del arranque
 check(#pwm_log == 1 and pwm_log[1] == 1000, "al arrancar deja el tambor en reposo (1000 us)")
 avanza(1000)
-check(#pwm_log == 1, "sin orden no hay pulsos")
+check(carreras() == 0, "sin orden no hay pulsos")
 
 -- 2) lote completo en vuelo: 10 pulsos separados 700 ms
 dispara(2)
 avanza(7500)
-check(#pwm_log == 11, "un lote HIGH = 10 pulsos (+1 de reposo) -> " .. #pwm_log)
-check(pwm_log[2] == 1160 and pwm_log[7] == 1000, "avanza 160 us por celda y vuelve a la 0 tras 6")
+check(carreras() == 10, "un lote HIGH = 10 carreras de avance -> " .. carreras())
+check(pwm_log[2] == 1160 and pwm_log[3] == 1000 and pwm_log[4] == 1160, "modo trinquete: carrera de 160 us y vuelta a reposo")
+check(pwm_log[#pwm_log] == 1000, "el servo termina en reposo")
 check(contiene("lote completo (10 bolas)"), "avisa al GCS cuando termina")
 check(#log_rows == 10 and log_rows[1][2] == "SEED", "registra cada pulso en el log")
 
 -- 3) bloqueado en FBWA: no suelta y avisa UNA vez
-local antes = #pwm_log
+local antes = carreras()
 vehiculo.mode = 5
 dispara(0); dispara(2); dispara(0); dispara(2); avanza(2000)
-check(#pwm_log == antes, "en FBWA no suelta")
+check(carreras() == antes, "en FBWA no suelta")
 check(contiene("bloqueado (no esta en AUTO)"), "explica por qué")
 -- (se vuelve a comprobar al final con TODOS los mensajes de la sesión)
 vehiculo.mode = 10
 
 -- 4) aborto a mitad de lote si baja de la altura mínima
 dispara(0)
-antes = #pwm_log
+antes = carreras()
 dispara(2)
 avanza(1500)                       -- unos 3 pulsos
 vehiculo.agl = 10                  -- por debajo de 15 m
 avanza(3000)
-local sueltas = #pwm_log - antes
+local sueltas = carreras() - antes
 check(sueltas >= 2 and sueltas <= 4, "se aborta a mitad del lote (pulsos: " .. sueltas .. ")")
 check(contiene("abortado en"), "avisa del aborto")
 vehiculo.agl = 30
 
 -- 5) LOW cancela el lote en curso
 dispara(0)
-antes = #pwm_log
+antes = carreras()
 dispara(2); avanza(800); dispara(0); avanza(5000)
-check(#pwm_log - antes <= 3, "LOW cancela el lote en curso")
+check(carreras() - antes <= 3, "LOW cancela el lote en curso")
 
 -- 6) un dato que falta (sin velocidad) bloquea sin romper el script
 vehiculo.arspd = nil
-dispara(0); antes = #pwm_log; dispara(2); avanza(1000)
-check(#pwm_log == antes, "sin velocidad no suelta")
+dispara(0); antes = carreras(); dispara(2); avanza(1000)
+check(carreras() == antes, "sin velocidad no suelta")
 check(not contiene("error interno"), "y no hay error interno")
 vehiculo.arspd = 12.5
 
 -- 7) en tierra (desarmado) solo con SEED_TEST=1
 vehiculo.armed = false
-dispara(0); antes = #pwm_log; dispara(1); avanza(500)
-check(#pwm_log == antes, "desarmado sin SEED_TEST no suelta")
+dispara(0); antes = carreras(); dispara(1); avanza(500)
+check(carreras() == antes, "desarmado sin SEED_TEST no suelta")
 params["SEED_TEST"] = 1
 dispara(0); dispara(1); avanza(500)
-check(#pwm_log == antes + 1, "desarmado con SEED_TEST=1 suelta 1 bola (MIDDLE)")
+check(carreras() == antes + 1, "desarmado con SEED_TEST=1 suelta 1 bola (MIDDLE)")
 params["SEED_TEST"] = 0
+
+-- 8) modo 0 (indexado): recarga el script con SEED_MODE=0 y comprueba las posiciones por celda
+params = { SEED_MODE = 0 }       -- add_param no pisa un valor ya presente
+pwm_log, mensajes = {}, {}
+vehiculo.armed, vehiculo.mode, vehiculo.agl, vehiculo.arspd = true, 10, 30, 12.5
+aux = nil
+update_fn = assert(loadfile(root .. "/ardupilot/scripts/seed_dropper.lua"))()
+dispara(0); dispara(2); avanza(7500)
+check(#pwm_log == 11 and pwm_log[2] == 1160 and pwm_log[6] == 1800 and pwm_log[7] == 1000,
+      "modo indexado: 160 us por celda y vuelta a la 0 tras 6 (" .. #pwm_log .. " valores)")
 
 check(not contiene("error interno"), "ningún error interno en toda la sesión")
 for _, m in ipairs(mensajes) do

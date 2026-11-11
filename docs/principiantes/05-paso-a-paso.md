@@ -92,8 +92,7 @@ baja, ruedas que no giran libres.
 ## Fase 4 · Tolva y tambor (6–8 h)
 
 **Qué haces:** imprimes y montas el depósito de semillas y el tambor que suelta una bola por pulso.
-**Antes de nada, resuelve el mecanismo** (un servo estándar no da 360°): ver el pendiente
-[S2](../discrepancias-y-pendientes.md).
+**Mecanismo:** un servo estándar no da 360°, así que el tambor lleva un **trinquete** (rueda libre): el servo da una carrera y vuelve, y cada carrera avanza una celda ([S2](../discrepancias-y-pendientes.md)).
 
 1. Dibuja tolva y tambor en Tinkercad ([03 §5](03-programas.md)) con el **mecanismo elegido**.
 2. Imprime una **pieza de prueba**; ajusta tolerancias (un hueco de 0,3–0,5 mm entre piezas móviles).
